@@ -148,6 +148,7 @@ Bug reports and pull requests are welcome on GitHub at https://github.com/svoop/
 
 ## Feature Brainstorming
 
+* registration lookups
 * configuration option to switch between metric and aeronautical units
 * more data sources such as ADS-B
 
