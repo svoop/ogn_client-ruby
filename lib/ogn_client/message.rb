@@ -80,9 +80,9 @@ module OGNClient
 
     def time=(raw)
       now = Time.now.utc
-      @time = Time.new(now.year, now.month, now.day, raw[0,2], raw[2,2], raw[4,2], 0).tap do |time|
-        time -= 86400 if time > now   # adjust date of beacons sent just before midnight
-      end
+      time = Time.new(now.year, now.month, now.day, raw[0,2], raw[2,2], raw[4,2], 0)
+      time -= 86400 if time > now   # adjust date of beacons sent just before midnight
+      @time = time
     end
 
     def longitude=(raw)

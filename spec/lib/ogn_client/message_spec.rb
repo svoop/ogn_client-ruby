@@ -6,12 +6,12 @@ describe OGNClient::Message do
 
   it "must parse valid raw message" do
     raw = "FLRDF0A52>APRS,qAS,LSTB:/220132h4658.70N/00707.72Ez090/054/A=001424 !W37! id06DF0A52 +020fpm +0.0rot 55.2dB 0e -6.2kHz gps4x6 hearD7EA hearDA95"
-    now = Time.now.utc
+    def Time.now; Time.new(2012, 12, 12, 22, 01, 37, 0); end
     subject.parse(raw).wont_be_nil
     subject.raw.must_equal raw
     subject.callsign.must_equal "FLRDF0A52"
     subject.receiver.must_equal "LSTB"
-    subject.time.must_equal Time.new(now.year, now.month, now.day, 22, 01, 32, 0)
+    subject.time.must_equal Time.new(2012, 12, 12, 22, 01, 32, 0)
     subject.longitude.must_equal 7.128783
     subject.latitude.must_equal 46.978383
     subject.altitude.must_equal 434
@@ -21,8 +21,7 @@ describe OGNClient::Message do
 
   it "must parse valid raw message around midnight" do
     raw = "FLRDF0A52>APRS,qAS,LSTB:/235955h4658.70N/00707.72Ez090/054/A=001424 !W37! id06DF0A52 +020fpm +0.0rot 55.2dB 0e -6.2kHz gps4x6 hearD7EA hearDA95"
-    now = Time.new(2012, 12, 12, 00, 00, 05, 0)
-    def Time.now; Time.new(2012, 12, 12, 00, 00, 05); end
+    def Time.now; Time.new(2012, 12, 12, 00, 00, 05, 0); end
     subject.parse(raw).wont_be_nil
     subject.time.must_equal Time.new(2012, 12, 11, 23, 59, 55, 0)
   end
