@@ -1,3 +1,8 @@
+[![Version](https://img.shields.io/gem/v/ogn_client-ruby.svg?style=flat)](https://rubygems.org/gems/ogn_client-ruby)
+[![Continuous Integration](https://img.shields.io/travis/svoop/ogn_client-ruby/master.svg?style=flat)](https://travis-ci.org/svoop/ogn_client-ruby)
+[![Code Climate](https://img.shields.io/codeclimate/github/svoop/ogn_client-ruby.svg?style=flat)](https://codeclimate.com/github/svoop/ogn_client-ruby)
+[![Gitter](https://img.shields.io/gitter/room/svoop/ogn_client-ruby.svg?style=flat)](https://gitter.im/svoop/ogn_client-ruby)
+
 # ogn_client-ruby
 
 [OGN](http://glidernet.org) broadcasts aircraft positions as [APRS](http://www.aprs.org)/[APRS-IS](http://www.aprs-is.net) messages. This gem hooks into this stream of data and provides the necessary classes to parse the raw message strings into meaningful objects.
