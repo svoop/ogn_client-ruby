@@ -1,5 +1,7 @@
 # ogn_client-ruby
 
+[![Join the chat at https://gitter.im/svoop/ogn_client-ruby](https://badges.gitter.im/Join%20Chat.svg)](https://gitter.im/svoop/ogn_client-ruby?utm_source=badge&utm_medium=badge&utm_campaign=pr-badge&utm_content=badge)
+
 [OGN](http://glidernet.org) broadcasts aircraft positions as [APRS](http://www.aprs.org)/[APRS-IS](http://www.aprs-is.net) messages. This gem hooks into this stream of data and provides the necessary classes to parse the raw message strings into meaningful objects.
 
 * Author: [Sven Schwyn](http://bitcetera.com)
