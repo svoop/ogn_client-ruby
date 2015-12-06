@@ -9,3 +9,5 @@ Rake::TestTask.new do |t|
 end
 
 task :default => :test
+
+Dir.glob('tasks/*.rake').each { |task| load task }
