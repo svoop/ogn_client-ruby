@@ -47,10 +47,17 @@ describe OGNClient::Message do
     subject.speed.must_be_nil
   end
 
-  it "must parse invalid raw message" do
+  it "must parse invalid raw message but issue a debug warning" do
     raw = "FLRDF0A52>APRS,qAS,LSTB:/220132h4658.70/00707.72z090/054/A=001424 !W37! id06DF0A52 +020fpm +0.0rot 55.2dB 0e -6.2kHz gps4x6 hearD7EA hearDA95"
-    subject.parse(raw).wont_be_nil
-    subject.raw.must_equal raw
+    old_debug, old_stdout = $DEBUG, $stdout
+    begin
+      $DEBUG, $stdout = true, StringIO.new('', 'w')
+      subject.parse(raw).wont_be_nil
+      subject.raw.must_equal raw
+      $stdout.string.wont_equal ''
+    ensure
+      $DEBUG, $stdout = old_debug, old_stdout
+    end
   end
 
 end

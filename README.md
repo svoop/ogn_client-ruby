@@ -93,7 +93,7 @@ Attributes:
 * **altitude** - meters
 * **heading** - degrees from 1 to 360
 * **speed** - kilometers per hour
-* **version** - software version "major.minor.patch"
+* **version** - software version as #<Gem::Version "major.minor.patch">
 * **platform** - e.g. :arm
 * **cpu_load** - as reported by "uptime"
 * **cpu_temperature** - in degrees celsius
