@@ -7,8 +7,8 @@ module OGNClient
       CPU:(?<cpu_load>[\d.]+)\s
       RAM:(?<ram_free>[\d.]+)/(?<ram_total>[\d.]+)MB\s
       NTP:(?<ntp_offset>[\d.]+)ms/(?<ntp_correction>[+-][\d.]+)ppm\s
-      (?:(?<cpu_temperature>[+-][\d.]+)C\s)?
-      RF:(?<signal>[+-][\d.]+)dB
+      (?:(?<cpu_temperature>[+-][\d.]+)C\s*)?
+      (?:RF:(?<signal>[+-][\d.]+)dB)?
     $)x
 
     attr_reader :version           # software version "major.minor.patch"
