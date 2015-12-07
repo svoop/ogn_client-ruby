@@ -43,15 +43,22 @@ module OGNClient
     attr_reader :speed       # kilometers per hour
 
     def self.parse(raw)
-      OGNClient::Sender.new.parse(raw) ||
-        OGNClient::Receiver.new.parse(raw) ||
-        OGNClient::Comment.new.parse(raw) ||
-        new.parse(raw)
+      raw = raw.chomp.force_encoding('ASCII-8BIT').encode('UTF-8')
+      OGNClient::Sender.new.send(:parse, raw) ||
+        OGNClient::Receiver.new.send(:parse, raw) ||
+        OGNClient::Comment.new.send(:parse, raw) ||
+        new.send(:parse, raw)
     end
+
+    def to_s
+      @raw
+    end
+
+    private
 
     def parse(raw)
       @raw = raw
-      raw.match(POSITION_PATTERN) do |match|
+      @raw.match(POSITION_PATTERN) do |match|
         %i(callsign receiver time altitude).each do |attr|
           send "#{attr}=", match[attr]
         end
@@ -63,12 +70,6 @@ module OGNClient
       end || OGNClient.debug("invalid message: `#{@raw}'")
       self
     end
-
-    def to_s
-      @raw
-    end
-
-    private
 
     def callsign=(raw)
       @callsign = raw

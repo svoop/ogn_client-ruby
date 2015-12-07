@@ -2,11 +2,10 @@ require_relative '../../../spec_helper'
 
 describe OGNClient::Sender do
 
-  subject { OGNClient::Sender.new }
-
   it "must parse valid raw message" do
     raw = "FLRDF0A52>APRS,qAS,LSTB:/220132h4658.70N/00707.72Ez090/054/A=001424 !W37! id06DF0A52 +020fpm +0.0rot 55.2dB 0e -6.2kHz gps4x6 hearD7EA hearDA95"
-    subject.parse(raw).wont_be_nil
+    subject = OGNClient::Message.parse raw
+    subject.must_be_instance_of OGNClient::Sender
     subject.raw.must_equal raw
     subject.stealth_mode.must_equal false
     subject.no_tracking.must_equal false
@@ -24,19 +23,22 @@ describe OGNClient::Sender do
 
   it "must parse valid raw message without gps" do
     raw = "FLRDF0A52>APRS,qAS,LSTB:/220132h4658.70N/00707.72Ez090/054/A=001424 !W37! id06DF0A52 +020fpm +0.0rot 55.2dB 0e -6.2kHz hearD7EA hearDA95"
-    subject.parse(raw).wont_be_nil
+    subject = OGNClient::Message.parse raw
+    subject.must_be_instance_of OGNClient::Sender
     subject.gps_accuracy.must_be_nil
   end
 
   it "must parse valid raw message without proximity" do
     raw = "FLRDF0A52>APRS,qAS,LSTB:/220132h4658.70N/00707.72Ez090/054/A=001424 !W37! id06DF0A52 +020fpm +0.0rot 55.2dB 0e -6.2kHz gps4x6"
-    subject.parse(raw).wont_be_nil
+    subject = OGNClient::Message.parse raw
+    subject.must_be_instance_of OGNClient::Sender
     subject.proximity.must_be_nil
   end
 
   it "won't parse invalid raw message" do
     raw = "FLRDF0A52>APRS,qAS,LSTB:/220132h4658.70N/00707.72Ez090/054/A=001424 !W37! +020fpm +0.0rot 55.2dB 0e -6.2kHz gps4x6 hearD7EA hearDA95"
-    subject.parse(raw).must_be_nil
+    subject = OGNClient::Message.parse raw
+    subject.wont_be_instance_of OGNClient::Sender
   end
 
 end

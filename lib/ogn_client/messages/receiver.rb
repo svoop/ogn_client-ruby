@@ -3,7 +3,8 @@ module OGNClient
   class Receiver < Message
 
     RECEIVER_PATTERN = %r(
-      v(?<version>\d+\.\d+\.\d+)\.(?<platform>.+?)\s
+      v(?<version>\d+\.\d+\.\d+)
+      (?:\.(?<platform>.+?))?\s
       CPU:(?<cpu_load>[\d.]+)\s
       RAM:(?<ram_free>[\d.]+)/(?<ram_total>[\d.]+)MB\s
       NTP:(?<ntp_offset>[\d.]+)ms/(?<ntp_correction>[+-][\d.]+)ppm\s
@@ -23,8 +24,11 @@ module OGNClient
     attr_reader :ntp_correction    # parts-per-million
     attr_reader :signal            # signal-to-noise ratio in decibel
 
+    private
+
     def parse(raw)
-      raw.match RECEIVER_PATTERN do |match|
+      @raw = raw
+      @raw.match RECEIVER_PATTERN do |match|
         return unless super
         %i(version platform cpu_load cpu_temperature ram_free ram_total ntp_offset ntp_correction signal).each do |attr|
           send("#{attr}=", match[attr]) if match[attr]
@@ -32,8 +36,6 @@ module OGNClient
         self
       end
     end
-
-    private
 
     def version=(raw)
       @version = Gem::Version.new(raw)

@@ -48,7 +48,9 @@ In the above example, each `aprs.gets` returns a raw message string. To decode t
 OGNClient::Message.parse(aprs.gets)
 ```
 
-This factory method will return an instance of one of the following four classes.
+:warning: Raw APRS messages as returned by `aprs.gets` are "ASCII-8BIT" encoded and may contain tailing whitespace. The parser removes this whitespace and converts the string to "UTF-8".
+
+The parser `OGNClient::Message.parse` is a factory method will return an instance of one of the following four classes.
 
 :point_up: Refer to the wiki for an introduction to [OGN flavoured APRS](https://github.com/svoop/ogn_client-ruby/wiki) messages.
 

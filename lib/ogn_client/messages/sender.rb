@@ -50,8 +50,11 @@ module OGNClient
     attr_reader :gps_accuracy       # array [vertical meters, horizontal meters]
     attr_reader :proximity          # array of callsign tails
 
+    private
+
     def parse(raw)
-      raw.match SENDER_PATTERN do |match|
+      @raw = raw
+      @raw.match SENDER_PATTERN do |match|
         return unless super
         %i(details id climb_rate turn_rate signal errors frequency_offset gps_accuracy proximity).each do |attr|
           send("#{attr}=", match[attr]) if match[attr]
@@ -59,8 +62,6 @@ module OGNClient
         self
       end
     end
-
-    private
 
     def details=(raw)
       byte = raw.to_i(16)

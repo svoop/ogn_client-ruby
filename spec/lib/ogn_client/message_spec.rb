@@ -2,12 +2,10 @@ require_relative '../../spec_helper'
 
 describe OGNClient::Message do
 
-  subject { OGNClient::Message.new }
-
   it "must parse valid raw message" do
     raw = "FLRDF0A52>APRS,qAS,LSTB:/220132h4658.70N/00707.72Ez090/054/A=001424 !W37! id06DF0A52 +020fpm +0.0rot 55.2dB 0e -6.2kHz gps4x6 hearD7EA hearDA95"
     def Time.now; Time.new(2012, 12, 12, 22, 01, 37, 0); end
-    subject.parse(raw).wont_be_nil
+    subject = OGNClient::Message.parse raw
     subject.raw.must_equal raw
     subject.callsign.must_equal "FLRDF0A52"
     subject.receiver.must_equal "LSTB"
@@ -22,27 +20,27 @@ describe OGNClient::Message do
   it "must parse valid raw message around midnight" do
     raw = "FLRDF0A52>APRS,qAS,LSTB:/235955h4658.70N/00707.72Ez090/054/A=001424 !W37! id06DF0A52 +020fpm +0.0rot 55.2dB 0e -6.2kHz gps4x6 hearD7EA hearDA95"
     def Time.now; Time.new(2012, 12, 12, 00, 00, 05, 0); end
-    subject.parse(raw).wont_be_nil
+    subject = OGNClient::Message.parse raw
     subject.time.must_equal Time.new(2012, 12, 11, 23, 59, 55, 0)
   end
 
   it "must parse valid raw message without longitude/latitude enhancement" do
     raw = "FLRDF0A52>APRS,qAS,LSTB:/220132h4658.70N/00707.72Ez090/054/A=001424 id06DF0A52 +020fpm +0.0rot 55.2dB 0e -6.2kHz gps4x6 hearD7EA hearDA95"
-    subject.parse(raw).wont_be_nil
+    subject = OGNClient::Message.parse raw
     subject.longitude.must_equal 7.128667
     subject.latitude.must_equal 46.978333
   end
 
   it 'must parse valid raw message without heading and speed' do
     raw = "FLRDF0A52>APRS,qAS,LSTB:/220132h4658.70N/00707.72Ez/A=001424 id06DF0A52 +020fpm +0.0rot 55.2dB 0e -6.2kHz gps4x6 hearD7EA hearDA95"
-    subject.parse(raw).wont_be_nil
+    subject = OGNClient::Message.parse raw
     subject.heading.must_be_nil
     subject.speed.must_be_nil
   end
 
   it 'must parse valid raw message with "no data" heading and speed' do
     raw = "FLRDF0A52>APRS,qAS,LSTB:/220132h4658.70N/00707.72Ez000/000/A=001424 id06DF0A52 +020fpm +0.0rot 55.2dB 0e -6.2kHz gps4x6 hearD7EA hearDA95"
-    subject.parse(raw).wont_be_nil
+    subject = OGNClient::Message.parse raw
     subject.heading.must_be_nil
     subject.speed.must_be_nil
   end
@@ -52,7 +50,7 @@ describe OGNClient::Message do
     old_debug, old_stdout = $DEBUG, $stdout
     begin
       $DEBUG, $stdout = true, StringIO.new('', 'w')
-      subject.parse(raw).wont_be_nil
+      subject = OGNClient::Message.parse raw
       subject.raw.must_equal raw
       $stdout.string.wont_equal ''
     ensure

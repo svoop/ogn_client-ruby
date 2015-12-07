@@ -16,7 +16,9 @@ describe OGNClient::APRS do
         10.times do
           raw = aprs.gets
           puts "    #{raw}"
-          OGNClient::Message.parse(raw).wont_be_nil
+          message = OGNClient::Message.parse(raw)
+          message.wont_be_nil
+          message.wont_be_instance_of OGNClient::Message
         end
       end
     end

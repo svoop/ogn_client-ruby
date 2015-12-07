@@ -8,15 +8,15 @@ module OGNClient
 
     attr_reader :comment   # free form text comment
 
+    private
+
     def parse(raw)
       @raw = raw
-      raw.match COMMENT_PATTERN do |match|
+      @raw.match COMMENT_PATTERN do |match|
         self.comment = match[:comment]
         self
       end
     end
-
-    private
 
     def comment=(raw)
       @comment = raw
