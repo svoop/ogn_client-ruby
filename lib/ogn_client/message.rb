@@ -27,20 +27,20 @@ module OGNClient
       (?<time>\d{6})h
       (?<latitude>\d{4}\.\d{2}[NS]).
       (?<longitude>\d{5}\.\d{2}[EW]).
-      (?:(?<heading>\d{3})/(?<speed>\d{3}))?.*?
+      (?:(?<heading>\d{3})/(?<ground_speed>\d{3}))?.*?
       /A=(?<altitude>\d{6})\s
       (?:!W((?<latitude_enhancement>\d)(?<longitude_enhancement>\d))!)?
     )x
 
     attr_reader :raw
-    attr_reader :callsign    # origin callsign
-    attr_reader :receiver    # receiver callsign
-    attr_reader :time        # zulu time with date
-    attr_reader :longitude   # WGS84 degrees from -180 (W) to 180 (E)
-    attr_reader :latitude    # WGS84 degrees from -90 (S) to 90 (N)
-    attr_reader :altitude    # WGS84 meters above mean sea level QNH
-    attr_reader :heading     # degrees from 1 to 360
-    attr_reader :speed       # kilometers per hour
+    attr_reader :callsign       # origin callsign
+    attr_reader :receiver       # receiver callsign
+    attr_reader :time           # zulu/UTC time with date
+    attr_reader :longitude      # WGS84 degrees from -180 (W) to 180 (E)
+    attr_reader :latitude       # WGS84 degrees from -90 (S) to 90 (N)
+    attr_reader :altitude       # WGS84 meters above mean sea level QNH
+    attr_reader :heading        # degrees from 1 to 360
+    attr_reader :ground_speed   # kilometers per hour
 
     def self.parse(raw)
       raw = raw.chomp.force_encoding('ASCII-8BIT').encode('UTF-8')
@@ -63,7 +63,7 @@ module OGNClient
           send "#{attr}=", match[attr]
         end
         self.heading = match[:heading] if match[:heading] && match[:heading] != '000'
-        self.speed = match[:speed] if match[:speed] && match[:heading] != '000'
+        self.ground_speed = match[:ground_speed] if match[:ground_speed] && match[:heading] != '000'
         self.longitude = [match[:longitude], match[:longitude_enhancement]]
         self.latitude = [match[:latitude], match[:latitude_enhancement]]
         self
@@ -104,8 +104,8 @@ module OGNClient
       @heading = raw.to_i
     end
 
-    def speed=(raw)
-      @speed = (raw.to_i * 1.852).round
+    def ground_speed=(raw)
+      @ground_speed = (raw.to_i * 1.852).round
     end
 
   end

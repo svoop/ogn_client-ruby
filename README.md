@@ -58,17 +58,17 @@ The parser `OGNClient::Message.parse` is a factory method will return an instanc
 
 Senders are usually aircraft equipped with [FLARM](https://flarm.com) (anti-collision warning system) or similar devices which broadcast position data as RF beacons.
 
-The data is converted into the metric system since [OGN](http://glidernet.org) is primarily made for gliders which mostly use the metric system for speed, climb rate and so forth.
+The data is converted into the metric system since [OGN](http://glidernet.org) is primarily made for gliders which mostly use the metric system for ground speed, climb rate and so forth.
 
 Attributes:
 * **callsign** - origin callsign
 * **receiver** - receiver callsign
-* **time** - UTZ/zulu time with date
+* **time** - zulu/UTC time with date
 * **longitude** - WGS84 degrees from -180 (W) to 180 (E)
 * **latitude** - WGS84 degrees from -90 (S) to 90 (N)
 * **altitude** - WGS84 meters above mean see level QNH
 * **heading** - degrees from 1 to 360
-* **speed** - kilometers per hour
+* **ground_speed** - kilometers per hour
 * **stealth_mode** - boolean (should always be false)
 * **no_tracking** - boolean
 * **sender_type** - see [SENDER_TYPES](https://github.com/svoop/ogn_client-ruby/blob/master/lib/ogn_client/messages/sender.rb)
@@ -90,12 +90,12 @@ Receivers are little RF boxes which pick up the RF beacons from aircraft and rel
 Attributes:
 * **callsign** - origin callsign
 * **receiver** - receiver callsign
-* **time** - UTZ/zulu time with date
+* **time** - zulu/UTC time with date
 * **longitude** - WG84 degrees from -180 (W) to 180 (E)
 * **latitude** - WG84 degrees from -90 (S) to 90 (N)
 * **altitude** - WG84 meters above mean sea level QNH
 * **heading** - degrees from 1 to 360
-* **speed** - kilometers per hour
+* **ground_speed** - kilometers per hour
 * **version** - software version as #<Gem::Version "major.minor.patch">
 * **platform** - e.g. :arm
 * **cpu_load** - as reported by "uptime"

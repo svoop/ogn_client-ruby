@@ -14,7 +14,7 @@ describe OGNClient::Message do
     subject.latitude.must_equal 46.978383
     subject.altitude.must_equal 434
     subject.heading.must_equal 90
-    subject.speed.must_equal 100
+    subject.ground_speed.must_equal 100
   end
 
   it "must parse valid raw message around midnight" do
@@ -31,18 +31,18 @@ describe OGNClient::Message do
     subject.latitude.must_equal 46.978333
   end
 
-  it 'must parse valid raw message without heading and speed' do
+  it 'must parse valid raw message without heading and ground speed' do
     raw = "FLRDF0A52>APRS,qAS,LSTB:/220132h4658.70N/00707.72Ez/A=001424 id06DF0A52 +020fpm +0.0rot 55.2dB 0e -6.2kHz gps4x6 hearD7EA hearDA95"
     subject = OGNClient::Message.parse raw
     subject.heading.must_be_nil
-    subject.speed.must_be_nil
+    subject.ground_speed.must_be_nil
   end
 
-  it 'must parse valid raw message with "no data" heading and speed' do
+  it 'must parse valid raw message with "no data" heading and ground speed' do
     raw = "FLRDF0A52>APRS,qAS,LSTB:/220132h4658.70N/00707.72Ez000/000/A=001424 id06DF0A52 +020fpm +0.0rot 55.2dB 0e -6.2kHz gps4x6 hearD7EA hearDA95"
     subject = OGNClient::Message.parse raw
     subject.heading.must_be_nil
-    subject.speed.must_be_nil
+    subject.ground_speed.must_be_nil
   end
 
   it "must parse invalid raw message but issue a debug warning" do
