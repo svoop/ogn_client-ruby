@@ -52,7 +52,7 @@ OGNClient::Message.parse(aprs.gets)
 
 :point_up: Raw APRS messages as returned by `aprs.gets` are "ASCII-8BIT" encoded and may contain tailing whitespace. The parser removes this whitespace and converts the string to "UTF-8".
 
-The factory method `OGNClient::Message.parse` will return one an instance of `OGNClient::Sender`, `OGNClient::Receiver`, `OGNClient::comment` or [raise an error](#errors). When this happens, either the message is crippled, the [OGN](http://glidernet.org) specifications have changed or you have found a bug in the parser code. You may want to store such messages, [file a bug](#contributing) and replay them once the bug has been fixed.
+The factory method `OGNClient::Message.parse` will return one an instance of `OGNClient::Sender`, `OGNClient::Receiver`, `OGNClient::comment` or [raise an error](#errors). When this happens, either the message is crippled, the [OGN](http://glidernet.org) specifications have changed or you have found a bug in the parser code. You may want to store such messages, [file a bug](#community-support) and replay them once the bug has been fixed.
 
 #### OGNClient::Sender
 
@@ -139,11 +139,19 @@ OGNClient::APRS.start(callsign: 'ROCT', filter: 'r/33/-97/200') do |aprs|
 end
 ```
 
+## Community Support
+
+* Look for developers and users on [Gitter](https://gitter.im/svoop/ogn_client-ruby).
+* Ask your questions on [Stackoverflow](https://stackoverflow.com/questions/ask?tags=ogn_client-ruby,ruby,gem).
+* Bug reports and pull requests are welcome on [GitHub](https://github.com/svoop/ogn_client-ruby).
+
 ## Development
 
 Check out the repository, install the dependencies and run the test suite:
 
     $ git clone git@github.com:svoop/ogn_client-ruby.git
+    $ cd ogn_client-ruby
+    $ gem install bundler
     $ bin/setup
     $ rake
 
@@ -158,10 +166,6 @@ To play around with the gem:
 And to install this gem onto your local machine:
 
     $ bundle exec rake install
-
-## Contributing
-
-Bug reports and pull requests are welcome on GitHub at https://github.com/svoop/ogn_client-ruby
 
 ## Feature Brainstorming
 
