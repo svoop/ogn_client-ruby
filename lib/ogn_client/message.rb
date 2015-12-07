@@ -36,9 +36,9 @@ module OGNClient
     attr_reader :callsign    # origin callsign
     attr_reader :receiver    # receiver callsign
     attr_reader :time        # zulu time with date
-    attr_reader :longitude   # degrees from -180 (W) to 180 (E)
-    attr_reader :latitude    # degrees from -90 (S) to 90 (N)
-    attr_reader :altitude    # meters
+    attr_reader :longitude   # WGS84 degrees from -180 (W) to 180 (E)
+    attr_reader :latitude    # WGS84 degrees from -90 (S) to 90 (N)
+    attr_reader :altitude    # WGS84 meters above mean sea level QNH
     attr_reader :heading     # degrees from 1 to 360
     attr_reader :speed       # kilometers per hour
 

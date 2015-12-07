@@ -64,9 +64,9 @@ Attributes:
 * **callsign** - origin callsign
 * **receiver** - receiver callsign
 * **time** - UTZ/zulu time with date
-* **longitude** - degrees from -180 (W) to 180 (E)
-* **latitude** - degrees from -90 (S) to 90 (N)
-* **altitude** - meters
+* **longitude** - WGS84 degrees from -180 (W) to 180 (E)
+* **latitude** - WGS84 degrees from -90 (S) to 90 (N)
+* **altitude** - WGS84 meters above mean see level QNH
 * **heading** - degrees from 1 to 360
 * **speed** - kilometers per hour
 * **stealth_mode** - boolean (should always be false)
@@ -76,6 +76,7 @@ Attributes:
 * **id** - device ID
 * **climb_rate** - meters per second
 * **turn_rate** - revolutions per minute
+* **flight_level** - 100 feet QNE
 * **signal** - signal to noise ratio in decibel
 * **errors** - number of CRC errors
 * **frequency_offset** - kilohertz
@@ -90,9 +91,9 @@ Attributes:
 * **callsign** - origin callsign
 * **receiver** - receiver callsign
 * **time** - UTZ/zulu time with date
-* **longitude** - degrees from -180 (W) to 180 (E)
-* **latitude** - degrees from -90 (S) to 90 (N)
-* **altitude** - meters
+* **longitude** - WG84 degrees from -180 (W) to 180 (E)
+* **latitude** - WG84 degrees from -90 (S) to 90 (N)
+* **altitude** - WG84 meters above mean sea level QNH
 * **heading** - degrees from 1 to 360
 * **speed** - kilometers per hour
 * **version** - software version as #<Gem::Version "major.minor.patch">

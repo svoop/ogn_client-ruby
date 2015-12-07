@@ -6,6 +6,7 @@ module OGNClient
       id(?<details>\w{2})(?<id>\w+?)\s
       (?<climb_rate>[+-]\d+?)fpm\s
       (?<turn_rate>[+-][\d.]+?)rot\s
+      (?:FL(?<flight_level>[\d.]+)\s)?
       (?<signal>[\d.]+?)dB\s
       (?<errors>\d+)e\s
       (?<frequency_offset>[+-][\d.]+?)kHz\s?
@@ -44,6 +45,7 @@ module OGNClient
     attr_reader :id                 # device ID
     attr_reader :climb_rate         # meters per second
     attr_reader :turn_rate          # revolutions per minute
+    attr_reader :flight_level       # 100 feet QNE
     attr_reader :signal             # signal to noise ratio in decibel
     attr_reader :errors             # number of CRC errors
     attr_reader :frequency_offset   # kilohertz
@@ -56,7 +58,7 @@ module OGNClient
       @raw = raw
       @raw.match SENDER_PATTERN do |match|
         return unless super
-        %i(details id climb_rate turn_rate signal errors frequency_offset gps_accuracy proximity).each do |attr|
+        %i(details id climb_rate turn_rate flight_level signal errors frequency_offset gps_accuracy proximity).each do |attr|
           send("#{attr}=", match[attr]) if match[attr]
         end
         self
@@ -81,6 +83,10 @@ module OGNClient
 
     def turn_rate=(raw)
       @turn_rate = (raw.to_i / 4.0).round(1)
+    end
+
+    def flight_level=(raw)
+      @flight_level = raw.to_f.round(2)
     end
 
     def signal=(raw)
