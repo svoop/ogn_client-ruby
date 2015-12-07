@@ -3,8 +3,7 @@ module OGNClient
   class Receiver < Message
 
     RECEIVER_PATTERN = %r(
-      v(?<version>\d+\.\d+\.\d+)
-      (?:\.(?<platform>.+?))?\s
+      (?:v(?<version>\d+\.\d+\.\d+)(?:\.(?<platform>.+?))?\s)?
       CPU:(?<cpu_load>[\d.]+)\s
       RAM:(?<ram_free>[\d.]+)/(?<ram_total>[\d.]+)MB\s
       NTP:(?<ntp_offset>[\d.]+)ms/(?<ntp_correction>[+-][\d.]+)ppm\s

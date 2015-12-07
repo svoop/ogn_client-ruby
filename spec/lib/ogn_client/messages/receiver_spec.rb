@@ -18,6 +18,14 @@ describe OGNClient::Receiver do
     subject.signal.must_equal 33.66
   end
 
+  it "must parse valid raw message without version" do
+    raw = "LKHS>APRS,TCPIP*,qAC,GLIDERN2:/211635h4902.45NI01429.51E&000/000/A=001689 CPU:0.2 RAM:777.7/972.2MB NTP:3.1ms/-3.8ppm +33.6C RF:+33.66dB"
+    subject = OGNClient::Message.parse raw
+    subject.must_be_instance_of OGNClient::Receiver
+    subject.version.must_be_nil
+    subject.platform.must_be_nil
+  end
+
   it "must parse valid raw message without platform" do
     raw = "LKHS>APRS,TCPIP*,qAC,GLIDERN2:/211635h4902.45NI01429.51E&000/000/A=001689 v0.2.4 CPU:0.2 RAM:777.7/972.2MB NTP:3.1ms/-3.8ppm +33.6C RF:+33.66dB"
     subject = OGNClient::Message.parse raw
@@ -40,7 +48,7 @@ describe OGNClient::Receiver do
   end
 
   it "won't parse invalid raw message" do
-    raw = "LKHS>APRS,TCPIP*,qAC,GLIDERN2:/211635h4902.45NI01429.51E&000/000/A=001689 CPU:0.2 RAM:777.7/972.2MB NTP:3.1ms/-3.8ppm +33.6C RF:+33.66dB"
+    raw = "LKHS>APRS,TCPIP*,qAC,GLIDERN2:/211635h4902.45NI01429.51E&000/000/A=001689 v0.2.4.ARM XXX:0.2 RAM:777.7/972.2MB NTP:3.1ms/-3.8ppm +33.6C RF:+33.66dB"
     subject = OGNClient::Message.parse raw
     subject.wont_be_instance_of OGNClient::Receiver
   end
