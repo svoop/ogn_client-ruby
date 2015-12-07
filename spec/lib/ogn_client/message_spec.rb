@@ -17,6 +17,25 @@ describe OGNClient::Message do
     subject.ground_speed.must_equal 100
   end
 
+  it "must parse 1000 recorded valid real-world raw messages" do
+    fixtures_file = 'spec/fixtures/messages.txt'
+    unless File.exist? fixtures_file
+      File.open(fixtures_file, 'w') do |file|
+        OGNClient::APRS.start(callsign: "ROCT-#{rand(100)}") do |aprs|
+          print '  recording 1000 real-time messages'
+          1000.times do
+            print '.'
+            file.puts aprs.gets
+          end
+          puts
+        end
+      end
+    end
+    File.foreach(fixtures_file) do |raw|
+      OGNClient::Message.parse raw
+    end
+  end
+
   it "must parse valid raw message around midnight" do
     raw = "FLRDF0A52>APRS,qAS,LSTB:/235955h4658.70N/00707.72Ez090/054/A=001424 !W37! id06DF0A52 +020fpm +0.0rot 55.2dB 0e -6.2kHz gps4x6 hearD7EA hearDA95"
     def Time.now; Time.new(2012, 12, 12, 00, 00, 05, 0); end
