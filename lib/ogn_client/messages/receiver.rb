@@ -11,7 +11,7 @@ module OGNClient
       (?:RF:(?<signal>[+-][\d.]+)dB)?
     $)x
 
-    SUPPORTED_RECEIVER_VERSION = Gem::Version.new('0.2.4')
+    SUPPORTED_RECEIVER_VERSION = Gem::Version.new('0.2.5')
 
     attr_reader :version           # software version as #<Gem::Version "major.minor.patch">
     attr_reader :platform          # e.g. "ARM"
