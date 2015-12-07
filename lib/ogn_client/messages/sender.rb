@@ -67,7 +67,9 @@ module OGNClient
         %i(details id climb_rate turn_rate flight_level signal errors frequency_offset gps_accuracy flarm_software_version flarm_hardware_version flarm_id proximity).each do |attr|
           send("#{attr}=", match[attr]) if match[attr]
         end
-        self.flarm_id ||= id if address_type == :icao || address_type == :flarm
+# NOTE: [@svoop] [ruby21] workaround necessary until support for ruby21 is removed
+#       self.flarm_id ||= id if address_type == :icao || address_type == :flarm
+        self.flarm_id = id if !flarm_id && (address_type == :icao || address_type == :flarm)
         self
       end
     end
