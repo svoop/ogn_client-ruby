@@ -11,6 +11,9 @@ module OGNClient
       (?<errors>\d+)e\s
       (?<frequency_offset>[+-][\d.]+?)kHz\s?
       (?:gps(?<gps_accuracy>\d+x\d+)\s?)?
+      (?:s(?<flarm_software_version>[\d.]+)\s?)?
+      (?:h(?<flarm_hardware_version>[\dA-F]{2})\s?)?
+      (?:r(?<flarm_id>[\dA-F]+)\s?)?
       (?:hear(?<proximity>.+))?
     $)x
 
@@ -38,19 +41,22 @@ module OGNClient
       3 => :ogn
     }
 
-    attr_reader :stealth_mode       # boolean
-    attr_reader :no_tracking        # boolean
-    attr_reader :sender_type        # see SENDER_TYPES
-    attr_reader :address_type       # see ADDRESS_TYPES
-    attr_reader :id                 # device ID
-    attr_reader :climb_rate         # meters per second
-    attr_reader :turn_rate          # revolutions per minute
-    attr_reader :flight_level       # 100 feet QNE
-    attr_reader :signal             # signal to noise ratio in decibel
-    attr_reader :errors             # number of CRC errors
-    attr_reader :frequency_offset   # kilohertz
-    attr_reader :gps_accuracy       # array [vertical meters, horizontal meters]
-    attr_reader :proximity          # array of callsign tails
+    attr_reader :stealth_mode             # boolean
+    attr_reader :no_tracking              # boolean
+    attr_reader :sender_type              # see SENDER_TYPES
+    attr_reader :address_type             # see ADDRESS_TYPES
+    attr_reader :id                       # device ID
+    attr_reader :climb_rate               # meters per second
+    attr_reader :turn_rate                # revolutions per minute
+    attr_reader :flight_level             # 100 feet QNE
+    attr_reader :signal                   # signal to noise ratio in decibel
+    attr_reader :errors                   # number of CRC errors
+    attr_reader :frequency_offset         # kilohertz
+    attr_reader :gps_accuracy             # array [vertical meters, horizontal meters]
+    attr_reader :flarm_software_version   # version as #<Gem::Version "major.minor">
+    attr_reader :flarm_hardware_version   # version as #<Gem::Version "major">
+    attr_reader :flarm_id                 # FLARM device ID
+    attr_reader :proximity                # array of FLARM device ID tails
 
     private
 
@@ -58,9 +64,10 @@ module OGNClient
       @raw = raw
       @raw.match SENDER_PATTERN do |match|
         return unless super
-        %i(details id climb_rate turn_rate flight_level signal errors frequency_offset gps_accuracy proximity).each do |attr|
+        %i(details id climb_rate turn_rate flight_level signal errors frequency_offset gps_accuracy flarm_software_version flarm_hardware_version flarm_id proximity).each do |attr|
           send("#{attr}=", match[attr]) if match[attr]
         end
+        self.flarm_id ||= id if address_type == :icao || address_type == :flarm
         self
       end
     end
@@ -103,6 +110,18 @@ module OGNClient
 
     def gps_accuracy=(raw)
       @gps_accuracy = raw.split('x').map(&:to_i)
+    end
+
+    def flarm_software_version=(raw)
+      @flarm_software_version = Gem::Version.new raw
+    end
+
+    def flarm_hardware_version=(raw)
+      @flarm_hardware_version = Gem::Version.new raw.to_i(16)
+    end
+
+    def flarm_id=(raw)
+      @flarm_id = raw
     end
 
     def proximity=(raw)

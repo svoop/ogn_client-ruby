@@ -10,16 +10,14 @@ describe OGNClient::APRS do
   end
 
   describe "#start" do
-    it "must connect and parse 10 real-time messages" do
+    it "must connect and parse 50 real-time messages" do
       OGNClient::APRS.start(callsign: "ROCT-#{rand(100)}") do |aprs|
-        puts "  testing against 10 real-time messages"
-        10.times do
-          raw = aprs.gets
-          puts "    #{raw}"
-          message = OGNClient::Message.parse(raw)
-          message.wont_be_nil
-          message.wont_be_instance_of OGNClient::Message
+        print '  parsing 50 real-time messages'
+        50.times do
+          print '.'
+          OGNClient::Message.parse aprs.gets
         end
+        puts
       end
     end
   end

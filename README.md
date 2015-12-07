@@ -36,11 +36,13 @@ Choose a [valid callsign](http://www.aprs-is.net/Connecting.aspx#loginrules) and
 
 ```ruby
 OGNClient::APRS.start(callsign: 'ROCT', filter: 'r/33/-97/200') do |aprs|
-  puts aprs.gets until aprs.eof?
+  loop { puts aprs.gets }
 end
 ```
 
 ### Parse Raw Message Strings
+
+:point_up: Refer to the wiki for an introduction to [OGN flavoured APRS](https://github.com/svoop/ogn_client-ruby/wiki) messages.
 
 In the above example, each `aprs.gets` returns a raw message string. To decode this string, just pass it to the message parser:
 
@@ -48,11 +50,9 @@ In the above example, each `aprs.gets` returns a raw message string. To decode t
 OGNClient::Message.parse(aprs.gets)
 ```
 
-:warning: Raw APRS messages as returned by `aprs.gets` are "ASCII-8BIT" encoded and may contain tailing whitespace. The parser removes this whitespace and converts the string to "UTF-8".
+:point_up: Raw APRS messages as returned by `aprs.gets` are "ASCII-8BIT" encoded and may contain tailing whitespace. The parser removes this whitespace and converts the string to "UTF-8".
 
-The parser `OGNClient::Message.parse` is a factory method will return an instance of one of the following four classes.
-
-:point_up: Refer to the wiki for an introduction to [OGN flavoured APRS](https://github.com/svoop/ogn_client-ruby/wiki) messages.
+The factory method `OGNClient::Message.parse` will return one an instance of `OGNClient::Sender`, `OGNClient::Receiver`, `OGNClient::comment` or [raise an error](#errors). When this happens, either the message is crippled, the [OGN](http://glidernet.org) specifications have changed or you have found a bug in the parser code. You may want to store such messages, [file a bug](#contributing) and replay them once the bug has been fixed.
 
 #### OGNClient::Sender
 
@@ -81,7 +81,10 @@ Attributes:
 * **errors** - number of CRC errors
 * **frequency_offset** - kilohertz
 * **gps_accuracy** - array [vertical meters, horizontal meters]
-* **proximity** - array of callsign tails
+* **flarm_software_version** - version as #<Gem::Version "major.minor">
+* **flarm_hardware_version** - version as #<Gem::Version "major">
+* **flarm_id** - FLARM device ID
+* **proximity** - array of FLARM device ID tails
 
 #### OGNClient::Receiver
 
@@ -113,16 +116,27 @@ Comments are sent on a regular basis to keep the connection alive.
 Attribute:
 * **comment** - raw message with the comment marker stripped
 
-#### OGNClient::Message
+## Errors
 
-Generic message objects are only used as a fallback in case the raw message string could not be parsed into one of the above three [OGN](http://glidernet.org) object types. If this happens, either the [OGN](http://glidernet.org) specifications have changed, the message is invalid or you have found a bug in the parser code. You can choose to ignore such messages or to store them for debugging and replaying once the bug is fixed.
+The following domain specific errors may be raised:
 
-## Debugging
+* OGNClient::MessageError - errors during the parsing of a message
+* OGNClient::ReceiverError - errors during the parsing of a receiver message
 
-To get additional debug messages, either invoke Ruby with the `-d` flag or set the global debug variable explicitly:
+They all inherit from `OGNClient::Error`. An fault-tolerant subscription could therefore look as follows:
 
 ```ruby
-$DEBUG = true
+logger = Logger.new('/tmp/ogn_client.log')
+OGNClient::APRS.start(callsign: 'ROCT', filter: 'r/33/-97/200') do |aprs|
+  loop do
+    begin
+      message = OGNClient::Message.parse aprs.gets
+    rescue OGNClient::Error => error
+      logger.error error.message
+    end
+    puts message.raw
+  end
+end
 ```
 
 ## Development

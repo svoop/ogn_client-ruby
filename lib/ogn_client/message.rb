@@ -43,11 +43,11 @@ module OGNClient
     attr_reader :ground_speed   # kilometers per hour
 
     def self.parse(raw)
+      fail(OGNClient::MessageError, "raw message must be String but is #{raw.class}") unless raw.is_a? String
       raw = raw.chomp.force_encoding('ASCII-8BIT').encode('UTF-8')
       OGNClient::Sender.new.send(:parse, raw) ||
         OGNClient::Receiver.new.send(:parse, raw) ||
-        OGNClient::Comment.new.send(:parse, raw) ||
-        new.send(:parse, raw)
+        OGNClient::Comment.new.send(:parse, raw)
     end
 
     def to_s
@@ -67,7 +67,7 @@ module OGNClient
         self.longitude = [match[:longitude], match[:longitude_enhancement]]
         self.latitude = [match[:latitude], match[:latitude_enhancement]]
         self
-      end || OGNClient.debug("invalid message: `#{@raw}'")
+      end || fail(OGNClient::MessageError, "message parsing failed: `#{@raw}'")
       self
     end
 

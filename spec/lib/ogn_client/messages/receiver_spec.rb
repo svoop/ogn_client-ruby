@@ -60,22 +60,9 @@ describe OGNClient::Receiver do
     subject.signal.must_equal 33.66
   end
 
-  it "won't parse invalid raw message" do
-    raw = "LKHS>APRS,TCPIP*,qAC,GLIDERN2:/211635h4902.45NI01429.51E&000/000/A=001689 v0.2.4.ARM XXX:0.2 RAM:777.7/972.2MB NTP:3.1ms/-3.8ppm +33.6C RF:+62-0.8ppm/+33.66dB"
-    subject = OGNClient::Message.parse raw
-    subject.wont_be_instance_of OGNClient::Receiver
-  end
-
-  it "must issue a debug warning if the version is not supported yet" do
+  it "must raise error if the version is not supported yet" do
     raw = "LKHS>APRS,TCPIP*,qAC,GLIDERN2:/211635h4902.45NI01429.51E&000/000/A=001689 v999.999.999.ARM CPU:0.2 RAM:777.7/972.2MB NTP:3.1ms/-3.8ppm +33.6C RF:+62-0.8ppm/+33.66dB"
-    old_debug, old_stdout = $DEBUG, $stdout
-    begin
-      $DEBUG, $stdout = true, StringIO.new('', 'w')
-      subject = OGNClient::Message.parse raw
-      $stdout.string.wont_equal ''
-    ensure
-      $DEBUG, $stdout = old_debug, old_stdout
-    end
+    -> { OGNClient::Message.parse(raw) }.must_raise OGNClient::ReceiverError
   end
 
 end

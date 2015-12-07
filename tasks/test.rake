@@ -3,16 +3,16 @@ namespace :test do
 
   desc "Parse real-time APRS messages and test the parser"
   task :parser do
-    $DEBUG = true
     require 'ogn_client'
     OGNClient::APRS.start(callsign: 'ROCT') do |aprs|
-      10_000.times do
-        raw = aprs.gets
-        message = OGNClient::Message.parse raw
+      loop do
         print '.'
-        if message.instance_of? OGNClient::Message
-          puts '', '', 'Oops! Could not parse the following message:', '', raw, '', message.inspect
-          break
+        raw = aprs.gets
+        begin
+          OGNClient::Message.parse raw
+        rescue OGNClient::Error => error
+          puts
+          warn "WARNING: #{error.message}"
         end
       end
     end

@@ -49,7 +49,7 @@ module OGNClient
 
     def version=(raw)
       @version = Gem::Version.new(raw)
-      OGNClient.debug("unsupported receiver version `#{@version}'") { @version > SUPPORTED_RECEIVER_VERSION }
+      fail(OGNClient::ReceiverError, "unsupported receiver version: `#{@raw}'") if @version > SUPPORTED_RECEIVER_VERSION
       @version
     end
 

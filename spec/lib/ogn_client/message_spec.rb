@@ -45,17 +45,14 @@ describe OGNClient::Message do
     subject.ground_speed.must_be_nil
   end
 
-  it "must parse invalid raw message but issue a debug warning" do
+  it "must raise error for raw message class other than String" do
+    raw = nil
+    -> { OGNClient::Message.parse(raw) }.must_raise OGNClient::MessageError
+  end
+
+  it "must raise error for message which cannot be parsed" do
     raw = "FLRDF0A52>APRS,qAS,LSTB:/220132h4658.70/00707.72z090/054/A=001424 !W37! id06DF0A52 +020fpm +0.0rot 55.2dB 0e -6.2kHz gps4x6 hearD7EA hearDA95"
-    old_debug, old_stdout = $DEBUG, $stdout
-    begin
-      $DEBUG, $stdout = true, StringIO.new('', 'w')
-      subject = OGNClient::Message.parse raw
-      subject.raw.must_equal raw
-      $stdout.string.wont_equal ''
-    ensure
-      $DEBUG, $stdout = old_debug, old_stdout
-    end
+    -> { OGNClient::Message.parse(raw) }.must_raise OGNClient::MessageError
   end
 
 end
