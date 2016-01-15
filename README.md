@@ -2,7 +2,7 @@
 [![Continuous Integration](https://img.shields.io/travis/svoop/ogn_client-ruby/master.svg?style=flat)](https://travis-ci.org/svoop/ogn_client-ruby)
 [![Code Climate](https://img.shields.io/codeclimate/github/svoop/ogn_client-ruby.svg?style=flat)](https://codeclimate.com/github/svoop/ogn_client-ruby)
 [![Gitter](https://img.shields.io/gitter/room/svoop/ogn_client-ruby.svg?style=flat)](https://gitter.im/svoop/ogn_client-ruby)
-[![Beerpay](https://img.shields.io/badge/beerpay-donate-yellow.svg)](https://beerpay.io/svoop/ogn_client-ruby)
+[![Donorbox](https://img.shields.io/badge/donate-on donorbox-yellow.svg)](https://donorbox.org/bitcetera-ogn_client-ruby)
 
 # ogn_client-ruby
 
@@ -11,7 +11,7 @@
 * Author: [Sven Schwyn](http://bitcetera.com)
 * Homepage: https://github.com/svoop/ogn_client-ruby
 
-:loudspeaker: A word from the shameless commerce division: Looking for a freelance Ruby developer? Surf to http://bitcetera.com and contact Sven. Or show your support with a [contribution on beerpay](https://beerpay.io/svoop/ogn_client-ruby).
+:loudspeaker: A word from the shameless commerce division: Looking for a freelance Ruby developer? Surf to http://bitcetera.com and contact Sven. Or [show your support with a donation](https://donorbox.org/bitcetera-ogn_client-ruby). Yes, we do sponsored features, too.
 
 ## Installation
 
@@ -144,8 +144,8 @@ end
 
 * Look for developers and users on [Gitter](https://gitter.im/svoop/ogn_client-ruby).
 * Ask your questions on [Stackoverflow](https://stackoverflow.com/questions/ask?tags=ogn_client-ruby,ruby,gem).
-* Bug reports and pull requests are welcome on [GitHub](https://github.com/svoop/ogn_client-ruby).
-* Submit a wish or sponsor a feature on [beerpay](https://beerpay.io/svoop/ogn_client-ruby).
+* Bug reports, feature and pull requests are welcome on [GitHub](https://github.com/svoop/ogn_client-ruby).
+* [Donations with Stripe or PayPal](https://donorbox.org/bitcetera-ogn_client-ruby) are welcome as well. If you prefer to sponsor a feature, please create an issue on [GitHub](https://github.com/svoop/ogn_client-ruby) first and state your intentions.
 
 ## Development
 
