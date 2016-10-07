@@ -47,7 +47,8 @@ module OGNClient
       raw = raw.chomp.force_encoding('ASCII-8BIT').encode('UTF-8')
       OGNClient::Sender.new.send(:parse, raw) ||
         OGNClient::Receiver.new.send(:parse, raw) ||
-        OGNClient::Comment.new.send(:parse, raw)
+        OGNClient::Comment.new.send(:parse, raw) ||
+        fail(OGNClient::MessageError, "message payload parsing failed: `#{raw}'")
     end
 
     def to_s
@@ -58,7 +59,7 @@ module OGNClient
 
     def parse(raw)
       @raw = raw
-      @raw.match(POSITION_PATTERN) do |match|
+      raw.match POSITION_PATTERN do |match|
         %i(callsign receiver time altitude).each do |attr|
           send "#{attr}=", match[attr]
         end
@@ -67,7 +68,7 @@ module OGNClient
         self.longitude = [match[:longitude], match[:longitude_enhancement]]
         self.latitude = [match[:latitude], match[:latitude_enhancement]]
         self
-      end || fail(OGNClient::MessageError, "message parsing failed: `#{@raw}'")
+      end or fail(OGNClient::MessageError, "message position parsing failed: `#{@raw}'")
       self
     end
 

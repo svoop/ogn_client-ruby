@@ -11,7 +11,7 @@ module OGNClient
     private
 
     def parse(raw)
-      @raw = raw
+      @raw ||= raw
       @raw.match COMMENT_PATTERN do |match|
         self.comment = match[:comment]
         self

@@ -37,9 +37,8 @@ module OGNClient
     private
 
     def parse(raw)
-      @raw = raw
-      @raw.match RECEIVER_PATTERN do |match|
-        return unless super
+      raw.match RECEIVER_PATTERN do |match|
+        super unless @raw
         %i(version platform cpu_load cpu_temperature ram_free ram_total ntp_offset ntp_correction manual_correction automatic_correction signal).each do |attr|
           send("#{attr}=", match[attr]) if match[attr]
         end

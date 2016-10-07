@@ -61,9 +61,8 @@ module OGNClient
     private
 
     def parse(raw)
-      @raw = raw
-      @raw.match SENDER_PATTERN do |match|
-        return unless super
+      raw.match SENDER_PATTERN do |match|
+        super unless @raw
         %i(details id climb_rate turn_rate flight_level signal errors frequency_offset gps_accuracy flarm_software_version flarm_hardware_version flarm_id proximity).each do |attr|
           send("#{attr}=", match[attr]) if match[attr]
         end
