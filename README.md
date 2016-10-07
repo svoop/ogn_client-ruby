@@ -127,15 +127,18 @@ The following domain specific errors may be raised:
 They all inherit from `OGNClient::Error`. An fault-tolerant subscription could therefore look as follows:
 
 ```ruby
+require 'ogn_client'
+
 logger = Logger.new('/tmp/ogn_client.log')
-OGNClient::APRS.start(callsign: 'ROCT', filter: 'r/33/-97/200') do |aprs|
+OGNClient::APRS.start(callsign: 'ROCT', filter: 'r/47/2/500') do |aprs|
   loop do
     begin
       message = OGNClient::Message.parse aprs.gets
     rescue OGNClient::Error => error
       logger.error error.message
+      next
     end
-    puts message.raw
+    puts message.raw   # do stuff here
   end
 end
 ```
