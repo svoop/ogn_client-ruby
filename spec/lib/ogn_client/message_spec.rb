@@ -17,13 +17,13 @@ describe OGNClient::Message do
     subject.ground_speed.must_equal 100
   end
 
-  it "must parse 1000 recorded valid real-world raw messages" do
+  it "must parse 5000 recorded valid real-world raw messages" do
     fixtures_file = 'spec/fixtures/messages.txt'
     unless File.exist? fixtures_file
       File.open(fixtures_file, 'w') do |file|
         OGNClient::APRS.start(callsign: "ROCT-#{rand(100)}") do |aprs|
           print '  recording 1000 real-time messages'
-          1000.times do
+          5000.times do
             print '.'
             file.puts aprs.gets
           end
