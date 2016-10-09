@@ -9,37 +9,63 @@ module OGNClient
       \s)?
       CPU:(?<cpu_load>[\d.]+)\s
       RAM:(?<ram_free>[\d.]+)/(?<ram_total>[\d.]+)MB\s
-      NTP:(?<ntp_offset>[\d.]+)ms/(?<ntp_correction>[+-][\d.]+)ppm\s?
+      NTP:(?<ntp_offset>[\d.]+)ms/(?<ntp_correction>[+-][\d.]+)ppm\s
+      (?:(?<voltage>[\d.]+)V\s)?
+      (?:(?<amperage>[\d.]+)A\s)?
       (?:(?<cpu_temperature>[+-][\d.]+)C\s*)?
+      (?:(?<visible_senders>\d+)/(?<senders>\d+)Acfts\[1h\]\s*)?
       (?:RF:
         (?:
-          (?<manual_correction>[+-][\d]+)
-          (?<automatic_correction>[+-][\d.]+)ppm/
+          (?<rf_correction_manual>[+-][\d]+)
+          (?<rf_correction_automatic>[+-][\d.]+)ppm/
         )?
         (?<signal>[+-][\d.]+)dB
+        (?:/(?<senders_signal>[+-][\d.]+)dB@10km\[(?<senders_messages>\d+)\])?
+        (?:/(?<good_senders_signal>[+-][\d.]+)dB@10km\[(?<good_senders>\d+)/(?<good_and_bad_senders>\d+)\])?
       )?
     $)x
 
-    SUPPORTED_RECEIVER_VERSION = Gem::Version.new('0.2.4')
+    SUPPORTED_RECEIVER_VERSION = Gem::Version.new('0.2.5')
 
-    attr_reader :version                # software version as #<Gem::Version "major.minor.patch">
-    attr_reader :platform               # e.g. "ARM"
-    attr_reader :cpu_load               # as reported by "uptime"
-    attr_reader :cpu_temperature        # degrees celsius
-    attr_reader :ram_free               # megabytes
-    attr_reader :ram_total              # megabytes
-    attr_reader :ntp_offset             # milliseconds
-    attr_reader :ntp_correction         # parts-per-million
-    attr_reader :manual_correction      # as per configuration
-    attr_reader :automatic_correction   # based on GSM
-    attr_reader :signal                 # signal-to-noise ratio in decibel
+    attr_reader :version                   # software version as #<Gem::Version "major.minor.patch">
+    attr_reader :platform                  # e.g. "ARM"
+    attr_reader :cpu_load                  # as reported by "uptime"
+    attr_reader :cpu_temperature           # degrees celsius
+    attr_reader :ram_free                  # megabytes
+    attr_reader :ram_total                 # megabytes
+    attr_reader :ntp_offset                # milliseconds
+    attr_reader :ntp_correction            # parts-per-million
+    attr_reader :voltage                   # board voltage in V
+    attr_reader :amperage                  # board amperage in A
+    attr_reader :rf_correction_manual      # as per configuration
+    attr_reader :rf_correction_automatic   # based on GSM
+    attr_reader :senders                   # number of senders within the last hour
+    attr_reader :visible_senders           # number of visible senders within the last hour
+    attr_reader :signal                    # signal-to-noise ratio in decibel
+    attr_reader :senders_signal            # average signal-to-noise ratio in decibel across all senders
+    attr_reader :senders_messages          # number of messages analyzed to calculate the above
+    attr_reader :good_senders_signal       # average signal-to-noise ratio in decibel of good senders (transmitting properly) within the last 24 hours
+    attr_reader :good_and_bad_senders      # number of good and bad senders within the last 24 hours
+    attr_reader :good_senders              # number of good senders (transmitting properly) within the last 24 hours
+
+    def invisible_senders
+      senders - visible_senders
+    rescue
+      nil
+    end
+
+    def bad_senders
+      good_and_bad_senders - good_senders
+    rescue
+      nil
+    end
 
     private
 
     def parse(raw)
       raw.match RECEIVER_PATTERN do |match|
         super unless @raw
-        %i(version platform cpu_load cpu_temperature ram_free ram_total ntp_offset ntp_correction manual_correction automatic_correction signal).each do |attr|
+        %i(version platform cpu_load cpu_temperature ram_free ram_total ntp_offset ntp_correction voltage amperage rf_correction_manual rf_correction_automatic senders visible_senders signal senders_signal senders_messages good_senders_signal good_and_bad_senders good_senders).each do |attr|
           send("#{attr}=", match[attr]) if match[attr]
         end
         self
@@ -80,16 +106,52 @@ module OGNClient
       @ntp_correction = raw.to_f.round(2)
     end
 
-    def manual_correction=(raw)
-      @manual_correction = raw.to_i
+    def voltage=(raw)
+      @voltage = raw.to_f.round(3)
     end
 
-    def automatic_correction=(raw)
-      @automatic_correction = raw.to_f.round(1)
+    def amperage=(raw)
+      @amperage = raw.to_f.round(3)
+    end
+
+    def rf_correction_manual=(raw)
+      @rf_correction_manual = raw.to_i
+    end
+
+    def rf_correction_automatic=(raw)
+      @rf_correction_automatic = raw.to_f.round(1)
+    end
+
+    def senders=(raw)
+      @senders = raw.to_i
+    end
+
+    def visible_senders=(raw)
+      @visible_senders = raw.to_i
     end
 
     def signal=(raw)
       @signal = raw.to_f.round(3)
+    end
+
+    def senders_signal=(raw)
+      @senders_signal = raw.to_f.round(3)
+    end
+
+    def senders_messages=(raw)
+      @senders_messages = raw.to_i
+    end
+
+    def good_senders_signal=(raw)
+      @good_senders_signal = raw.to_f.round(3)
+    end
+
+    def good_and_bad_senders=(raw)
+      @good_and_bad_senders = raw.to_i
+    end
+
+    def good_senders=(raw)
+      @good_senders = raw.to_i
     end
 
   end

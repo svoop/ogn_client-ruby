@@ -1,10 +1,19 @@
+require 'ogn_client'
 
 namespace :test do
 
+  desc "Receive and dump real-time APRS messages"
+  task :receiver do
+    OGNClient::APRS.start(callsign: "ROCT-#{rand(100)}") do |aprs|
+      loop do
+        print aprs.gets
+      end
+    end
+  end
+
   desc "Parse real-time APRS messages and test the parser"
   task :parser do
-    require 'ogn_client'
-    OGNClient::APRS.start(callsign: 'ROCT') do |aprs|
+    OGNClient::APRS.start(callsign: "ROCT-#{rand(100)}") do |aprs|
       loop do
         print '.'
         raw = aprs.gets

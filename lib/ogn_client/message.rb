@@ -22,13 +22,12 @@ module OGNClient
   class Message
 
     POSITION_PATTERN = %r(^
-      (?<callsign>\w+?)>APRS,.+?,
-      (?<receiver>\w+):/
+      (?<callsign>.+?)>APRS,(?:.+?,){1,2}
+      (?<receiver>.+?):[/>]
       (?<time>\d{6})h
-      (?<latitude>\d{4}\.\d{2}[NS]).
-      (?<longitude>\d{5}\.\d{2}[EW]).
-      (?:(?<heading>\d{3})/(?<ground_speed>\d{3}))?.*?
-      /A=(?<altitude>\d{6})\s
+      (?:(?<latitude>\d{4}\.\d{2}[NS]).(?<longitude>\d{5}\.\d{2}[EW]).)?
+      (?:(?<heading>\d{3})/(?<ground_speed>\d{3}))?
+      (?:/A=(?<altitude>\d{6}))?\s+
       (?:!W((?<latitude_enhancement>\d)(?<longitude_enhancement>\d))!)?
     )x
 
@@ -61,12 +60,12 @@ module OGNClient
       @raw = raw
       raw.match POSITION_PATTERN do |match|
         %i(callsign receiver time altitude).each do |attr|
-          send "#{attr}=", match[attr]
+          send("#{attr}=", match[attr]) if match[attr]
         end
         self.heading = match[:heading] if match[:heading] && match[:heading] != '000'
         self.ground_speed = match[:ground_speed] if match[:ground_speed] && match[:heading] != '000'
-        self.longitude = [match[:longitude], match[:longitude_enhancement]]
-        self.latitude = [match[:latitude], match[:latitude_enhancement]]
+        self.longitude = [match[:longitude], match[:longitude_enhancement]] if match[:longitude]
+        self.latitude = [match[:latitude], match[:latitude_enhancement]] if match[:latitude]
         self
       end or fail(OGNClient::MessageError, "message position parsing failed: `#{@raw}'")
       self

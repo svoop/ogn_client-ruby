@@ -43,18 +43,24 @@ describe OGNClient::Message do
     subject.time.must_equal Time.new(2012, 12, 11, 23, 59, 55, 0)
   end
 
-  it "must parse valid raw message without longitude/latitude enhancement" do
-    raw = "FLRDF0A52>APRS,qAS,LSTB:/220132h4658.70N/00707.72Ez090/054/A=001424 id06DF0A52 +020fpm +0.0rot 55.2dB 0e -6.2kHz gps4x6 hearD7EA hearDA95"
+  it 'must parse valid raw message without longitude nor latitude' do
+    raw = "FLRDF0A52>APRS,qAS,LSTB:>220132h090/054/A=001424 !W37! id06DF0A52 +020fpm +0.0rot 55.2dB 0e -6.2kHz gps4x6 hearD7EA hearDA95"
     subject = OGNClient::Message.parse raw
-    subject.longitude.must_equal 7.128667
-    subject.latitude.must_equal 46.978333
+    subject.longitude.must_be_nil
+    subject.latitude.must_be_nil
   end
 
-  it 'must parse valid raw message without heading and ground speed' do
+  it 'must parse valid raw message without heading nor ground speed' do
     raw = "FLRDF0A52>APRS,qAS,LSTB:/220132h4658.70N/00707.72Ez/A=001424 id06DF0A52 +020fpm +0.0rot 55.2dB 0e -6.2kHz gps4x6 hearD7EA hearDA95"
     subject = OGNClient::Message.parse raw
     subject.heading.must_be_nil
     subject.ground_speed.must_be_nil
+  end
+
+  it 'must parse valid raw message without altitude' do
+    raw = "FLRDF0A52>APRS,qAS,LSTB:/220132h4658.70N/00707.72Ez090/054 !W37! id06DF0A52 +020fpm +0.0rot 55.2dB 0e -6.2kHz gps4x6 hearD7EA hearDA95"
+    subject = OGNClient::Message.parse raw
+    subject.altitude.must_be_nil
   end
 
   it 'must parse valid raw message with "no data" heading and ground speed' do
@@ -64,13 +70,20 @@ describe OGNClient::Message do
     subject.ground_speed.must_be_nil
   end
 
+  it "must parse valid raw message without longitude/latitude enhancement" do
+    raw = "FLRDF0A52>APRS,qAS,LSTB:/220132h4658.70N/00707.72Ez090/054/A=001424 id06DF0A52 +020fpm +0.0rot 55.2dB 0e -6.2kHz gps4x6 hearD7EA hearDA95"
+    subject = OGNClient::Message.parse raw
+    subject.longitude.must_equal 7.128667
+    subject.latitude.must_equal 46.978333
+  end
+
   it "must raise error for raw message class other than String" do
     raw = nil
     -> { OGNClient::Message.parse(raw) }.must_raise OGNClient::MessageError
   end
 
   it "must raise error for message which cannot be parsed" do
-    raw = "FLRDF0A52>APRS,qAS,LSTB:/220132h4658.70/00707.72z090/054/A=001424 !W37! id06DF0A52 +020fpm +0.0rot 55.2dB 0e -6.2kHz gps4x6 hearD7EA hearDA95"
+    raw = "FLRDF0A52"
     -> { OGNClient::Message.parse(raw) }.must_raise OGNClient::MessageError
   end
 

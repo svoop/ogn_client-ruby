@@ -1,5 +1,27 @@
+## 0.1.2
+
+  * support for receiver versions <= 0.2.5
+  * faster message parsing
+  * new sender and receiver attributes
+    * `Sender#power`
+    * `Receiver#voltage`
+    * `Receiver#amperage`
+    * `Receiver#senders`
+    * `Receiver#senders_visible`
+    * `Receiver#senders_invisible`
+    * `Receiver#voltage`
+    * `Receiver#senders_signal`
+    * `Receiver#senders_messages`
+    * `Receiver#good_and_bad_senders`
+    * `Receiver#good_senders`
+    * `Receiver#bad_senders`
+  * renamed receiver attributes
+    * `Receiver#manual_correction` -> `Receiver#rf_correction_manual`
+    * `Receiver#automatic_correction` -> `Receiver#rf_correction_automatic`
+
 ## 0.1.1
 
+  * supported receiver versions <= 0.2.4
   * remove debug support and raise errors instead
   * convert raw messages to UTF-8 before parsing
   * new sender and receiver attributes
@@ -12,7 +34,6 @@
   * renamed message attribute
     * `Message#speed` -> `Message#ground_speed`
   * verification of supported receiver version
-  * supported receiver versions <= 0.2.5
 
 ## 0.1.0
 
