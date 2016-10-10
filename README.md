@@ -144,15 +144,18 @@ They all inherit from `OGNClient::Error`. An fault-tolerant subscription could t
 require 'ogn_client'
 
 logger = Logger.new('/tmp/ogn_client.log')
-OGNClient::APRS.start(callsign: 'ROCT', filter: 'r/47/2/500') do |aprs|
-  loop do
-    begin
-      message = OGNClient::Message.parse aprs.gets
-    rescue OGNClient::Error => error
-      logger.error error.message
-      next
+options = { callsign: 'ROCT', filter: 'r/47/2/500' }
+loop do
+  OGNClient::APRS.start(options) do |aprs|
+    while raw = aprs.gets
+      begin
+        message = OGNClient::Message.parse aprs.gets
+      rescue OGNClient::Error => error
+        logger.error error.message
+        next
+      end
+      puts message.raw   # do more interesting stuff here
     end
-    puts message.raw   # do stuff here
   end
 end
 ```

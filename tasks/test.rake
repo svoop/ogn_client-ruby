@@ -13,15 +13,17 @@ namespace :test do
 
   desc "Parse real-time APRS messages and test the parser"
   task :parser do
-    OGNClient::APRS.start(callsign: "ROCT-#{rand(100)}") do |aprs|
-      loop do
-        print '.'
-        raw = aprs.gets
-        begin
-          OGNClient::Message.parse raw
-        rescue OGNClient::Error => error
-          puts
-          warn "WARNING: #{error.message}"
+    callsign = "ROCT-#{rand(100)}"
+    loop do
+      OGNClient::APRS.start(callsign: callsign) do |aprs|
+        while raw = aprs.gets do
+          print '.'
+          begin
+            OGNClient::Message.parse raw
+          rescue OGNClient::Error => error
+            puts
+            warn "WARNING: #{error.message}"
+          end
         end
       end
     end
