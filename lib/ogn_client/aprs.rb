@@ -32,6 +32,7 @@ module OGNClient
     def start
     	@socket = TCPSocket.open SERVER, @port
       @socket.puts handshake
+      @socket.flush
       if block_given?
         begin
           return yield(@socket)
