@@ -53,7 +53,7 @@ OGNClient::Message.parse(aprs.gets)
 
 :point_up: Raw APRS messages as returned by `aprs.gets` are "ASCII-8BIT" encoded and may contain tailing whitespace. The parser removes this whitespace and converts the string to "UTF-8".
 
-The factory method `OGNClient::Message.parse` will return one an instance of `OGNClient::Sender`, `OGNClient::Receiver`, `OGNClient::comment` or [raise an error](#errors). When this happens, either the message is crippled, the [OGN](http://glidernet.org) specifications have changed or you have found a bug in the parser code. You may want to store such messages, [file a bug](#community-support) and replay them once the bug has been fixed.
+The factory method `OGNClient::Message.parse` will return one an instance of `OGNClient::Sender`, `OGNClient::Receiver`, `OGNClient::Comment` or [raise an error](#errors). When this happens, either the message is crippled, the [OGN](http://glidernet.org) specifications have changed or you have found a bug in the parser code. You may want to store such messages, [file a bug](#community-support) and replay them once the bug has been fixed.
 
 #### OGNClient::Sender
 
@@ -178,7 +178,7 @@ Check out the repository, install the dependencies and run the test suite:
     $ bin/setup
     $ rake
 
-If you are on Mac OS X, +guard+, +guard-minitest+ and +minitest-osx+ are also installed and therefore you get the test results as notifications by running a guard watchdog with:
+If you are on macOS, *guard*, *guard-minitest* and *minitest-osx* are also installed and therefore you get the test results as notifications by running a guard watchdog with:
 
     $ guard
 
