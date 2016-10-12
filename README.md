@@ -78,8 +78,8 @@ Attributes:
 * **flight_level** - 100 feet QNE
 * **climb_rate** - meters per second
 * **turn_rate** - revolutions per minute
-* **power** - power ratio in dBm
-* **signal** - signal to noise ratio in decibel
+* **signal_power** - power ratio in dBm
+* **signal_quality** - signal to noise ratio in decibel
 * **errors** - number of CRC errors
 * **frequency_offset** - kilohertz
 * **gps_accuracy** - array [vertical meters, horizontal meters]
@@ -116,10 +116,10 @@ Attributes:
 * **senders** - number of senders received within the last hour
 * **visible_senders** - number of visible senders withint the last hour
 * **invisible_senders** - number of invisible senders ("no-track" on device or "invisible" in database)
-* **signal** - signal-to-noise ratio in decibel
-* **senders_signal** - average signal-to-noise ratio across all senders
+* **signal_quality** - signal-to-noise ratio in decibel
+* **senders_signal_quality** - average signal-to-noise ratio across all senders
 * **senders_messages** - number of messages analyzed to calculate the above
-* **good_senders_signal** - average signal-to-noise ratio in decibel of good senders (transmitting properly) within the last 24 hours
+* **good_senders_signal_quality** - average signal-to-noise ratio in decibel of good senders (transmitting properly) within the last 24 hours
 * **good_and_bad_senders** - number of good and bad senders within the last 24 hours
 * **good_senders** - number of good senders (transmitting properly) within the last 24 hours
 * **bad_senders** - number of bad senders (not transmitting properly) within the last 24 hours

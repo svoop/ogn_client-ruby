@@ -7,14 +7,14 @@ module OGNClient
       (?<climb_rate>[+-]\d+?)fpm\s
       (?<turn_rate>[+-][\d.]+?)rot\s
       (?:FL(?<flight_level>[\d.]+)\s)?
-      (?<signal>[\d.]+?)dB\s
+      (?<signal_quality>[\d.]+?)dB\s
       (?<errors>\d+)e\s
       (?<frequency_offset>[+-][\d.]+?)kHz\s?
       (?:gps(?<gps_accuracy>\d+x\d+)\s?)?
       (?:s(?<flarm_software_version>[\d.]+)\s?)?
       (?:h(?<flarm_hardware_version>[\dA-F]{2})\s?)?
       (?:r(?<flarm_id>[\dA-F]+)\s?)?
-      (?:(?<power>[+-][\d.]+)dBm\s?)?
+      (?:(?<signal_power>[+-][\d.]+)dBm\s?)?
       (?:hear(?<proximity>.+))?
     $)x
 
@@ -50,8 +50,8 @@ module OGNClient
     attr_reader :flight_level             # 100 feet QNE
     attr_reader :climb_rate               # meters per second
     attr_reader :turn_rate                # revolutions per minute
-    attr_reader :power                    # power ratio in dBm
-    attr_reader :signal                   # signal to noise ratio in decibel
+    attr_reader :signal_power             # power ratio in dBm
+    attr_reader :signal_quality           # signal-to-noise ratio in decibel
     attr_reader :errors                   # number of CRC errors
     attr_reader :frequency_offset         # kilohertz
     attr_reader :gps_accuracy             # array [vertical meters, horizontal meters]
@@ -65,7 +65,7 @@ module OGNClient
     def parse(raw)
       raw.match SENDER_PATTERN do |match|
         super unless @raw
-        %i(details id flight_level climb_rate turn_rate power signal errors frequency_offset gps_accuracy flarm_software_version flarm_hardware_version flarm_id proximity).each do |attr|
+        %i(details id flight_level climb_rate turn_rate signal_power signal_quality errors frequency_offset gps_accuracy flarm_software_version flarm_hardware_version flarm_id proximity).each do |attr|
           send("#{attr}=", match[attr]) if match[attr]
         end
 # NOTE: [@svoop] [ruby21] workaround necessary until support for ruby21 is removed
@@ -99,12 +99,12 @@ module OGNClient
       @turn_rate = (raw.to_i / 4.0).round(1)
     end
 
-    def power=(raw)
-      @power = raw.to_f.round(3)
+    def signal_power=(raw)
+      @signal_power = raw.to_f.round(3)
     end
 
-    def signal=(raw)
-      @signal = raw.to_f.round(1)
+    def signal_quality=(raw)
+      @signal_quality = raw.to_f.round(1)
     end
 
     def errors=(raw)

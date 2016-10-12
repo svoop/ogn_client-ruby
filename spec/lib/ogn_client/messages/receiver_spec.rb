@@ -22,10 +22,10 @@ describe OGNClient::Receiver do
     subject.ntp_correction.must_equal -3.8
     subject.rf_correction_manual.must_equal 62
     subject.rf_correction_automatic.must_equal -0.8
-    subject.signal.must_equal 33.66
-    subject.senders_signal.must_equal 19.4
+    subject.signal_quality.must_equal 33.66
+    subject.senders_signal_quality.must_equal 19.4
     subject.senders_messages.must_equal 112619
-    subject.good_senders_signal.must_equal 25
+    subject.good_senders_signal_quality.must_equal 25
     subject.good_and_bad_senders.must_equal 15
     subject.good_senders.must_equal 8
     subject.bad_senders.must_equal 7
@@ -75,16 +75,16 @@ describe OGNClient::Receiver do
     subject.invisible_senders.must_be_nil
   end
 
-  it "must parse valid raw message without signal, corrections nor averages" do
+  it "must parse valid raw message without signal_quality, corrections nor averages" do
     raw = "LKHS>APRS,TCPIP*,qAC,GLIDERN2:/211635h4902.45NI01429.51E&000/000/A=001689 v0.2.5.ARM CPU:0.2 RAM:777.7/972.2MB NTP:3.1ms/-3.8ppm 4.902V 0.583A +33.6C 14/16Acfts[1h]"
     subject = OGNClient::Message.parse raw
     subject.must_be_instance_of OGNClient::Receiver
     subject.rf_correction_manual.must_be_nil
     subject.rf_correction_automatic.must_be_nil
-    subject.signal.must_be_nil
-    subject.senders_signal.must_be_nil
+    subject.signal_quality.must_be_nil
+    subject.senders_signal_quality.must_be_nil
     subject.senders_messages.must_be_nil
-    subject.good_senders_signal.must_be_nil
+    subject.good_senders_signal_quality.must_be_nil
     subject.good_senders.must_be_nil
     subject.bad_senders.must_be_nil
   end
@@ -95,10 +95,10 @@ describe OGNClient::Receiver do
     subject.must_be_instance_of OGNClient::Receiver
     subject.rf_correction_manual.must_be_nil
     subject.rf_correction_automatic.must_be_nil
-    subject.signal.must_equal 33.66
-    subject.senders_signal.must_be_nil
+    subject.signal_quality.must_equal 33.66
+    subject.senders_signal_quality.must_be_nil
     subject.senders_messages.must_be_nil
-    subject.good_senders_signal.must_be_nil
+    subject.good_senders_signal_quality.must_be_nil
     subject.good_senders.must_be_nil
     subject.bad_senders.must_be_nil
   end
@@ -109,10 +109,10 @@ describe OGNClient::Receiver do
     subject.must_be_instance_of OGNClient::Receiver
     subject.rf_correction_manual.must_equal 62
     subject.rf_correction_automatic.must_equal -0.8
-    subject.signal.must_equal 33.66
-    subject.senders_signal.must_be_nil
+    subject.signal_quality.must_equal 33.66
+    subject.senders_signal_quality.must_be_nil
     subject.senders_messages.must_be_nil
-    subject.good_senders_signal.must_be_nil
+    subject.good_senders_signal_quality.must_be_nil
     subject.good_senders.must_be_nil
     subject.bad_senders.must_be_nil
   end

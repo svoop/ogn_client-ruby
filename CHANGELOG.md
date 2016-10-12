@@ -1,3 +1,12 @@
+## 0.1.3
+
+  * renamed sender and receiver attributes
+    * `Sender#signal` -> `Sender#signal_quality`
+    * `Sender#power` -> `Sender#signal_power`
+    * `Receiver#signal` -> `Receiver#signal_quality`
+    * `Receiver#senders_signal` -> `Receiver#senders_signal_quality`
+    * `Receiver#good_senders_signal` -> `Receiver#good_senders_signal_quality`
+
 ## 0.1.2
 
   * support for receiver versions <= 0.2.5
