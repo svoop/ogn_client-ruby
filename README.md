@@ -83,8 +83,8 @@ Attributes:
 * **errors** - number of CRC errors
 * **frequency_offset** - kilohertz
 * **gps_accuracy** - array [vertical meters, horizontal meters]
-* **flarm_software_version** - version as #<Gem::Version "major.minor">
-* **flarm_hardware_version** - version as #<Gem::Version "major">
+* **flarm_software_version** - version as "major.minor"
+* **flarm_hardware_version** - version as integer
 * **flarm_id** - FLARM device ID
 * **proximity** - array of FLARM device ID tails
 
@@ -101,7 +101,7 @@ Attributes:
 * **altitude** - WG84 meters above mean sea level QNH
 * **heading** - degrees from 1 to 360
 * **ground_speed** - kilometers per hour
-* **version** - software version as #<Gem::Version "major.minor.patch">
+* **version** - software version as "major.minor.patch"
 * **platform** - e.g. :arm
 * **cpu_load** - as reported by "uptime"
 * **cpu_temperature** - in degrees celsius

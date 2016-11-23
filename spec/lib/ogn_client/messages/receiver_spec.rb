@@ -7,7 +7,7 @@ describe OGNClient::Receiver do
     subject = OGNClient::Message.parse raw
     subject.must_be_instance_of OGNClient::Receiver
     subject.raw.must_equal raw
-    subject.version.must_equal Gem::Version.new('0.2.5')
+    subject.version.must_equal '0.2.5'
     subject.platform.must_equal :arm
     subject.cpu_load.must_equal 0.2
     subject.cpu_temperature.must_equal 33.6
@@ -117,9 +117,14 @@ describe OGNClient::Receiver do
     subject.bad_senders.must_be_nil
   end
 
-  it "must raise error if the version is not supported yet" do
+  it "must raise error if the version is not accepted yet" do
     raw = "LKHS>APRS,TCPIP*,qAC,GLIDERN2:/211635h4902.45NI01429.51E&000/000/A=001689 v999.999.999.ARM CPU:0.2 RAM:777.7/972.2MB NTP:3.1ms/-3.8ppm 4.902V 0.583A +33.6C 14/16Acfts[1h] RF:+62-0.8ppm/+33.66dB/+19.4dB@10km[112619]/+25.0dB@10km[8/15]"
     -> { OGNClient::Message.parse(raw) }.must_raise OGNClient::ReceiverError
+  end
+
+  it "must warn if the version is not supported yet" do
+    raw = "LKHS>APRS,TCPIP*,qAC,GLIDERN2:/211635h4902.45NI01429.51E&000/000/A=001689 v0.2.999.ARM CPU:0.2 RAM:777.7/972.2MB NTP:3.1ms/-3.8ppm 4.902V 0.583A +33.6C 14/16Acfts[1h] RF:+62-0.8ppm/+33.66dB/+19.4dB@10km[112619]/+25.0dB@10km[8/15]"
+    -> { OGNClient::Message.parse(raw) }.must_output('', /unsupported receiver version `0.2.999'/)
   end
 
 end

@@ -55,8 +55,8 @@ module OGNClient
     attr_reader :errors                   # number of CRC errors
     attr_reader :frequency_offset         # kilohertz
     attr_reader :gps_accuracy             # array [vertical meters, horizontal meters]
-    attr_reader :flarm_software_version   # version as #<Gem::Version "major.minor">
-    attr_reader :flarm_hardware_version   # version as #<Gem::Version "major">
+    attr_reader :flarm_software_version   # version as "major.minor"
+    attr_reader :flarm_hardware_version   # version as "major"
     attr_reader :flarm_id                 # FLARM device ID
     attr_reader :proximity                # array of FLARM device ID tails
 
@@ -120,11 +120,11 @@ module OGNClient
     end
 
     def flarm_software_version=(raw)
-      @flarm_software_version = Gem::Version.new raw
+      @flarm_software_version = raw
     end
 
     def flarm_hardware_version=(raw)
-      @flarm_hardware_version = Gem::Version.new raw.to_i(16)
+      @flarm_hardware_version = raw.to_i(16)
     end
 
     def flarm_id=(raw)

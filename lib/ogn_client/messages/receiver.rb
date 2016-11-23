@@ -25,9 +25,10 @@ module OGNClient
       )?
     $)x
 
-    SUPPORTED_RECEIVER_VERSION = Gem::Version.new('0.2.5')
+    ACCEPTED_RECEIVER_VERSION = Gem::Dependency.new('', '< 0.3')
+    SUPPORTED_RECEIVER_VERSION = Gem::Dependency.new('', '<= 0.2.5')
 
-    attr_reader :version                       # software version as #<Gem::Version "major.minor.patch">
+    attr_reader :version                       # software version as "major.minor.patch"
     attr_reader :platform                      # e.g. "ARM"
     attr_reader :cpu_load                      # as reported by "uptime"
     attr_reader :cpu_temperature               # degrees celsius
@@ -73,8 +74,9 @@ module OGNClient
     end
 
     def version=(raw)
-      @version = Gem::Version.new(raw)
-      fail(OGNClient::ReceiverError, "unsupported receiver version: `#{@raw}'") if @version > SUPPORTED_RECEIVER_VERSION
+      @version = raw
+      fail(OGNClient::ReceiverError, "unacceptable receiver version `#{@version}'") unless ACCEPTED_RECEIVER_VERSION.match?('', @version)
+      warn("unsupported receiver version `#{@version}'") unless SUPPORTED_RECEIVER_VERSION.match?('', @version)
       @version
     end
 

@@ -19,8 +19,8 @@ describe OGNClient::Sender do
     subject.errors.must_equal 0
     subject.frequency_offset.must_equal -6.2
     subject.gps_accuracy.must_equal [4, 6]
-    subject.flarm_software_version.must_equal Gem::Version.new('6.01')
-    subject.flarm_hardware_version.must_equal Gem::Version.new(0x03)
+    subject.flarm_software_version.must_equal '6.01'
+    subject.flarm_hardware_version.must_equal 0x03
     subject.flarm_id.must_equal 'DDACC4'
     subject.signal_power.must_equal 5.0
     subject.proximity.must_equal ["D7EA", "DA95"]
