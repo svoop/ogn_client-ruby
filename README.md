@@ -36,8 +36,12 @@ Or install it yourself with:
 Choose a [valid callsign](http://www.aprs-is.net/Connecting.aspx#loginrules) and [appropriate filters](http://www.aprs-is.net/javAPRSFilter.aspx), then start listening to the broadcasted raw messages:
 
 ```ruby
-OGNClient::APRS.start(callsign: 'ROCT', filter: 'r/33/-97/200') do |aprs|
-  loop { puts aprs.gets }
+require 'ogn_client'
+
+OGNClient::APRS.start(callsign: "ROCT#{rand(1000)}", filter: 'r/47/2/500') do |aprs|
+  while raw = aprs.gets
+    puts raw   # do more interesting stuff here
+  end
 end
 ```
 
@@ -53,7 +57,9 @@ OGNClient::Message.parse(aprs.gets)
 
 :point_up: Raw APRS messages as returned by `aprs.gets` are "ASCII-8BIT" encoded and may contain tailing whitespace. The parser removes this whitespace and converts the string to "UTF-8".
 
-The factory method `OGNClient::Message.parse` will return one an instance of `OGNClient::Sender`, `OGNClient::Receiver`, `OGNClient::Comment` or [raise an error](#errors). When this happens, either the message is crippled, the [OGN](http://glidernet.org) specifications have changed or you have found a bug in the parser code. You may want to store such messages, [file a bug](#community-support) and replay them once the bug has been fixed.
+The factory method `OGNClient::Message.parse` will return one an instance of `OGNClient::Sender`, `OGNClient::Receiver`, `OGNClient::Comment` or [raise an error](#errors). When this happens, either the message is crippled, the [OGN](http://glidernet.org) specifications have changed or you have found a bug in the parser code.
+
+In production, you may want to rescue from these errors and ignore the message. You should, however, log the offending messages messages, [file a bug](#community-support) and replay them once the bug has been fixed.
 
 #### OGNClient::Sender
 
@@ -142,9 +148,10 @@ They all inherit from `OGNClient::Error`. An fault-tolerant subscription could t
 
 ```ruby
 require 'ogn_client'
+require 'logger'
 
 logger = Logger.new('/tmp/ogn_client.log')
-options = { callsign: 'ROCT', filter: 'r/47/2/500' }
+options = { callsign: "ROCT#{rand(1000)}", filter: 'r/47/2/500' }
 loop do
   OGNClient::APRS.start(options) do |aprs|
     while raw = aprs.gets
@@ -159,6 +166,8 @@ loop do
   end
 end
 ```
+
+:point_up: Receiver versions ("major.minor.patch") are will only raise an error when the offending version has a higher major or minor version digit. Patch level differences will only trigger a warning.
 
 ## Community Support
 
