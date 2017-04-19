@@ -52,7 +52,6 @@ namespace :test do
             OGNClient::Message.parse raw
           rescue OGNClient::Error => error
             puts "ERROR: #{error.message}"
-            exit
           end
         end
       end
