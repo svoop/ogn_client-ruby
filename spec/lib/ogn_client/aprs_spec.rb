@@ -11,7 +11,7 @@ describe OGNClient::APRS do
 
   describe "#start" do
     it "must connect and parse 50 valid real-time raw messages" do
-      OGNClient::APRS.start(callsign: "ROCT-#{rand(100)}") do |aprs|
+      OGNClient::APRS.start(callsign: "ROCT#{rand(1000)}") do |aprs|
         print '  parsing 50 real-time messages'
         50.times do
           print '.'
@@ -26,7 +26,7 @@ describe OGNClient::APRS do
     subject { OGNClient::APRS.new callsign: "ROCT" }
 
     it "must return -1 for readonly logins" do
-      subject.send(:passcode, readonly: true).must_equal -1
+      subject.send(:passcode, readonly: true).must_equal (-1)
     end
 
     it "must calculate the passcode for readwrite logins" do

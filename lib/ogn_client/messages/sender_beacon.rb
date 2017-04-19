@@ -1,15 +1,15 @@
 module OGNClient
 
-  class Sender < Message
+  class SenderBeacon < Message
 
-    SENDER_PATTERN = %r(
+    SENDER_BEACON_PATTERN = %r(
       id(?<details>\w{2})(?<id>\w+?)\s
       (?<climb_rate>[+-]\d+?)fpm\s
       (?<turn_rate>[+-][\d.]+?)rot\s
       (?:FL(?<flight_level>[\d.]+)\s)?
-      (?<signal_quality>[\d.]+?)dB\s
-      (?<errors>\d+)e\s
-      (?<frequency_offset>[+-][\d.]+?)kHz\s?
+      (?:(?<signal_quality>[\d.]+?)dB\s)?
+      (?:(?<errors>\d+)e\s)?
+      (?:(?<frequency_offset>[+-][\d.]+?)kHz\s?)?
       (?:gps(?<gps_accuracy>\d+x\d+)\s?)?
       (?:s(?<flarm_software_version>[\d.]+)\s?)?
       (?:h(?<flarm_hardware_version>[\dA-F]{2})\s?)?
@@ -63,7 +63,7 @@ module OGNClient
     private
 
     def parse(raw)
-      raw.match SENDER_PATTERN do |match|
+      raw.match SENDER_BEACON_PATTERN do |match|
         super unless @raw
         %i(details id flight_level climb_rate turn_rate signal_power signal_quality errors frequency_offset gps_accuracy flarm_software_version flarm_hardware_version flarm_id proximity).each do |attr|
           send("#{attr}=", match[attr]) if match[attr]

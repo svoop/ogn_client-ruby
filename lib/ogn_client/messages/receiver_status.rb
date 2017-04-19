@@ -1,8 +1,8 @@
 module OGNClient
 
-  class Receiver < Message
+  class ReceiverStatus < Message
 
-    RECEIVER_PATTERN = %r(
+    RECEIVER_STATUS_PATTERN = %r(
       (?:
         v(?<version>\d+\.\d+\.\d+)
         (?:\.(?<platform>.+?))?
@@ -25,8 +25,8 @@ module OGNClient
       )?
     $)x
 
-    ACCEPTED_RECEIVER_VERSION = Gem::Dependency.new('', '< 0.3')
-    SUPPORTED_RECEIVER_VERSION = Gem::Dependency.new('', '<= 0.2.5')
+    NO_WARN_RECEIVER_VERSIONS = Gem::Dependency.new('', '>= 0.2.6', '< 0.2.8')
+    NO_FAIL_RECEIVER_VERSIONS = Gem::Dependency.new('', '< 0.3')
 
     attr_reader :version                       # software version as "major.minor.patch"
     attr_reader :platform                      # e.g. "ARM"
@@ -64,7 +64,7 @@ module OGNClient
     private
 
     def parse(raw)
-      raw.match RECEIVER_PATTERN do |match|
+      raw.match RECEIVER_STATUS_PATTERN do |match|
         super unless @raw
         %i(version platform cpu_load cpu_temperature ram_free ram_total ntp_offset ntp_correction voltage amperage rf_correction_manual rf_correction_automatic senders visible_senders signal_quality senders_signal_quality senders_messages good_senders_signal_quality good_and_bad_senders good_senders).each do |attr|
           send("#{attr}=", match[attr]) if match[attr]
@@ -75,8 +75,8 @@ module OGNClient
 
     def version=(raw)
       @version = raw
-      fail(OGNClient::ReceiverError, "unacceptable receiver version `#{@version}'") unless ACCEPTED_RECEIVER_VERSION.match?('', @version)
-      warn("unsupported receiver version `#{@version}'") unless SUPPORTED_RECEIVER_VERSION.match?('', @version)
+      fail(OGNClient::ReceiverError, "receiver version `#{@version}'") unless NO_FAIL_RECEIVER_VERSIONS.match?('', @version)
+      warn("WARNING: receiver version `#{@version}'") unless NO_WARN_RECEIVER_VERSIONS.match?('', @version)
       @version
     end
 

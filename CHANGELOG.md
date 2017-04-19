@@ -1,3 +1,10 @@
+## 0.2.0
+
+  * support for receiver versions <= 0.2.6
+    * renamed `Sender` to `SenderBeacon`
+    * devided `Receiver` to `ReceiverBeacon` and `ReceiverStatus`
+    * `ReceiverStatus` is *not* available for receiver versions < 0.2.6
+
 ## 0.1.3
 
   * renamed sender and receiver attributes

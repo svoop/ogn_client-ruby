@@ -61,9 +61,9 @@ The factory method `OGNClient::Message.parse` will return one an instance of `OG
 
 In production, you may want to rescue from these errors and ignore the message. You should, however, log the offending messages messages, [file a bug](#community-support) and replay them once the bug has been fixed.
 
-#### OGNClient::Sender
+#### OGNClient::SenderBeacon
 
-Senders are usually aircraft equipped with [FLARM](https://flarm.com) (anti-collision warning system) or similar devices which broadcast position data as RF beacons.
+Sender beacons are usually coming from aircraft equipped with [FLARM](https://flarm.com) (anti-collision warning system) or similar devices which broadcast position data as RF beacons.
 
 The data is converted into the metric system since [OGN](http://glidernet.org) is primarily made for gliders which mostly use the metric system for ground speed, climb rate and so forth.
 
@@ -94,9 +94,9 @@ Attributes:
 * **flarm_id** - FLARM device ID
 * **proximity** - array of FLARM device ID tails
 
-#### OGNClient::Receiver
+#### OGNClient::ReceiverBeacon
 
-Receivers are little RF boxes which pick up the RF beacons from aircraft and relay them to the OGN servers as messages. They send their own status messages on a regular basis.
+Receivers are little RF boxes which pick up the RF beacons from aircraft and relay them to the OGN servers as messages. They send their own beacons on a regular basis.
 
 Attributes:
 * **callsign** - origin callsign
@@ -107,6 +107,17 @@ Attributes:
 * **altitude** - WG84 meters above mean sea level QNH
 * **heading** - degrees from 1 to 360
 * **ground_speed** - kilometers per hour
+
+Please note: These receiver beacons contained status information up until version 0.2.5.
+
+#### OGNClient::ReceiverStatus
+
+Receivers of version 0.2.6 and higher send status messages on a regular basis:
+
+Attributes:
+* **callsign** - origin callsign
+* **receiver** - receiver callsign
+* **time** - zulu/UTC time with date
 * **version** - software version as "major.minor.patch"
 * **platform** - e.g. :arm
 * **cpu_load** - as reported by "uptime"
@@ -175,7 +186,7 @@ end
 * Ask your questions on [Stackoverflow](https://stackoverflow.com/questions/ask?tags=ogn_client-ruby,ruby,gem).
 * Annotated source code on [omniref](https://www.omniref.com/repositories/svoop/ogn_client-ruby)
 * Bug reports, feature and pull requests are welcome on [GitHub](https://github.com/svoop/ogn_client-ruby).
-* [Donations with Stripe or PayPal](https://donorbox.org/bitcetera-ogn_client-ruby) are welcome as well. If you prefer to sponsor a feature, please create an issue on [GitHub](https://github.com/svoop/ogn_client-ruby) first and state your intentions.
+* [Donations are welcome as well](https://donorbox.org/bitcetera-ogn_client-ruby)l. If you prefer to sponsor a feature, please create an issue on [GitHub](https://github.com/svoop/ogn_client-ruby) first and state your intentions.
 
 ## Development
 

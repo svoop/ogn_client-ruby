@@ -27,8 +27,9 @@ module OGNClient
       (?<time>\d{6})h
       (?:(?<latitude>\d{4}\.\d{2}[NS]).(?<longitude>\d{5}\.\d{2}[EW]).)?
       (?:(?<heading>\d{3})/(?<ground_speed>\d{3}))?
-      (?:/A=(?<altitude>\d{6}))?\s+
+      (?:/A=(?<altitude>\d{6}))?\s*
       (?:!W((?<latitude_enhancement>\d)(?<longitude_enhancement>\d))!)?
+      (?:\s|$)
     )x
 
     attr_reader :raw
@@ -44,8 +45,9 @@ module OGNClient
     def self.parse(raw)
       fail(OGNClient::MessageError, "raw message must be String but is #{raw.class}") unless raw.is_a? String
       raw = raw.chomp.force_encoding('ASCII-8BIT').encode('UTF-8')
-      OGNClient::Sender.new.send(:parse, raw) ||
-        OGNClient::Receiver.new.send(:parse, raw) ||
+      OGNClient::SenderBeacon.new.send(:parse, raw) ||
+        OGNClient::ReceiverStatus.new.send(:parse, raw) ||
+        OGNClient::ReceiverBeacon.new.send(:parse, raw) ||
         OGNClient::Comment.new.send(:parse, raw) ||
         fail(OGNClient::MessageError, "message payload parsing failed: `#{raw}'")
     end

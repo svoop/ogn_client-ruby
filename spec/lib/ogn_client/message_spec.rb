@@ -21,8 +21,8 @@ describe OGNClient::Message do
     fixtures_file = 'spec/fixtures/messages.txt'
     unless File.exist? fixtures_file
       File.open(fixtures_file, 'w') do |file|
-        OGNClient::APRS.start(callsign: "ROCT-#{rand(100)}") do |aprs|
-          print '  recording 1000 real-time messages'
+        OGNClient::APRS.start(callsign: "ROCT#{rand(1000)}") do |aprs|
+          print '  recording 5000 real-time messages'
           5000.times do
             print '.'
             file.puts aprs.gets
@@ -82,8 +82,13 @@ describe OGNClient::Message do
     -> { OGNClient::Message.parse(raw) }.must_raise OGNClient::MessageError
   end
 
-  it "must raise error for message which cannot be parsed" do
+  it "must raise error for message which payload cannot be parsed" do
     raw = "FLRDF0A52"
+    -> { OGNClient::Message.parse(raw) }.must_raise OGNClient::MessageError
+  end
+
+  it "must raise error for message which position cannot be parsed" do
+    raw = "FLRDF0A52>APRS,qAS,LSTB:/220132hXXX/XXXz090/054/A=001424 !W37! id06DF0A52 +020fpm +0.0rot 55.2dB 0e -6.2kHz gps4x6 hearD7EA hearDA95"
     -> { OGNClient::Message.parse(raw) }.must_raise OGNClient::MessageError
   end
 
