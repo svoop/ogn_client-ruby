@@ -1,3 +1,9 @@
+## 0.2.1
+
+  * add example executables
+    * ognlogd
+    * ogn2kml
+
 ## 0.2.0
 
   * support for receiver versions <= 0.2.6
