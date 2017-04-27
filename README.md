@@ -180,6 +180,20 @@ end
 
 :point_up: Receiver versions ("major.minor.patch") are will only raise an error when the offending version has a higher major or minor version digit. Patch level differences will only trigger a warning.
 
+## Executables
+
+### ognlogd
+
+A simple daemon to log raw APRS messages to daily files.
+
+    ognlogd --help
+
+### ogn2kml
+
+Convert raw APRS messages (e.g. from `ognlogd`) to KML.
+
+    ogn2kml --help
+
 ## Community Support
 
 * Look for developers and users on [Gitter](https://gitter.im/svoop/ogn_client-ruby).

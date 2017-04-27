@@ -1,0 +1,80 @@
+#!/usr/bin/env ruby
+
+require 'bundler/inline'
+require 'optparse'
+require 'time'
+
+gemfile do
+  source 'https://rubygems.org'
+  ruby '>= 2.4'
+  gem 'ogn_client-ruby', '~> 0.2', require: 'ogn_client'
+  gem 'daemons', '~> 1.2'
+end
+
+class Daemon
+  attr_reader :name, :command, :rundir, :monitor
+
+  def initialize
+    @name = File.basename($0)
+    @callsign = "ROCD#{rand(1000)}"
+    @filter = "r/44/4/20"
+    @outdir = "/tmp"
+    @rundir = '/var/run'
+    @gzip = true
+    @monitor = false
+    OptionParser.new do |o|
+      o.banner = <<~END
+        Log raw OGN APRS messages to daily files.
+        Usage: #{@name} [options] {start|stop|restart|run|status|zap}
+      END
+      o.on('-a', '--about', 'author and license information') { puts 'Written by Sven Schwyn (bitcetera.com) and distributed under MIT license.'; exit }
+      o.on('-c', '--callsign STRING', String, 'daemon callsign (default: ROCDnnnn)') { |v| @callsign = v }
+      o.on('-f', '--filter STRING', String, "APRS filter (default: #{@filter})") { |v| @filter = v }
+      o.on('-g', '--[no-]gzip', "gzip log files at midnight (default: #{@gzip})") { |v| @gzip = v }
+      o.on('-m', '--[no-]monitor', "automatically restart daemon after crash (default: #{@monitor})") { |v| @monitor = v }
+      o.on('-o', '--outdir DIR', String, "directory to write the files (default: #{@outdir})") { |v| @outdir = v }
+      o.on('-r', '--rundir DIR', String, "directory to write the PID file (default: #{@rundir})") { |v| @rundir = v }
+    end.parse!
+    @command = ARGV.pop&.to_sym
+    fail "command not recognized" unless %i(start stop restart run status zap).include? @command
+  end
+
+  def capture!
+    loop do
+      catch :cut do
+        `gzip "#{logfile}"` if @gzip && defined?(logfile)
+        logfile = "#{@outdir}/ogn.log-#{Time.now.strftime('%Y%m%d')}"
+        end_of_day = Time.parse("24:00").to_i
+        File.open(logfile, 'a') do |file|
+          file.sync = true
+          loop do
+            OGNClient::APRS.start(callsign: @callsign, filter: @filter) do |aprs|
+              while raw = aprs.gets
+                file.puts raw
+                throw :cut if end_of_day < Process.clock_gettime(Process::CLOCK_REALTIME, :second)
+              end
+            end
+          end
+        end
+      end
+    end
+  end
+end
+
+begin
+  daemon = Daemon.new
+  Daemons.run_proc(
+    daemon.name,
+    multiple: false,
+    ARGV: [daemon.command.to_s],
+    dir_mode: :normal,
+    dir: daemon.rundir,
+    monitor: daemon.monitor,
+    monitor_interval: 60
+  ) do
+    daemon.capture!
+  end
+rescue => exception
+  puts "#{File.basename($0)}: #{exception.message}"
+  exit 1
+end

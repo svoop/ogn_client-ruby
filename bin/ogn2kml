@@ -1,0 +1,126 @@
+#!/usr/bin/env ruby
+
+require 'bundler/inline'
+require 'optparse'
+
+gemfile do
+  source 'https://rubygems.org'
+  ruby '>= 2.4'
+  gem 'progressbar', '~> 1.8'
+  gem 'libxml-ruby', '~> 3.0', require: 'xml'
+  gem 'ogn_client-ruby', '~> 0.2', require: 'ogn_client'
+end
+
+class Converter
+  def initialize
+    OptionParser.new do |o|
+      o.banner = <<~END
+        Convert raw OGN APRS to KML tracks.
+        Usage: ogn2kml [options] infile
+      END
+      o.on('-a', '--about', 'author and license information') { puts 'Written by Sven Schwyn (bitcetera.com) and distributed under MIT license.'; exit }
+      o.on('-c', '--callsign STRING', String, 'aircraft callsign (e.g. FLRAABBCC)') { |v| @callsign = v }
+      o.on('-o', '--outfile FILE', String, 'generated KML file (default: INFILE.kml)') { |v| @outfile = v.sub(/\.kml$/, '') + '.kml' }
+    end.parse!
+    @infile = ARGV.pop
+    fail 'infile not found' unless @infile && File.exists?(@infile)
+    @outfile ||= @infile.sub(/\.\w+$/, '') + '.kml'
+  end
+
+  def style_nodes
+    fragment = <<~END
+      <Fragment>
+        <Style id="track_normal">
+          <IconStyle>
+            <Icon>
+              <href>http://earth.google.com/images/kml-icons/track-directional/track-0.png</href>
+            </Icon>
+          </IconStyle>
+          <LineStyle>
+            <color>99ffac59</color>
+            <width>6</width>
+          </LineStyle>
+        </Style>
+        <Style id="track_highlight">
+          <IconStyle>
+            <scale>1.2</scale>
+            <Icon>
+              <href>http://earth.google.com/images/kml-icons/track-directional/track-0.png</href>
+            </Icon>
+          </IconStyle>
+          <LineStyle>
+            <color>99ffac59</color>
+            <width>8</width>
+          </LineStyle>
+        </Style>
+        <StyleMap id="track">
+          <Pair>
+            <key>normal</key>
+            <styleUrl>#track_normal</styleUrl>
+          </Pair>
+          <Pair>
+            <key>highlight</key>
+            <styleUrl>#track_highlight</styleUrl>
+          </Pair>
+        </StyleMap>
+      </Fragment>
+    END
+    XML::Parser.string(fragment).parse.root.each_child { |c| yield c }
+  end
+
+  def convert!
+    lines = File.readlines(@infile)
+    progressbar = ProgressBar.create(format: '%e |%b>%i| %p%% %t', total: lines.count)
+    xml = XML::Document.new
+    root = xml.root = XML::Node.new(:kml)
+    root['xmlns'] = 'http://www.opengis.net/kml/2.2'
+    root['xmlns:gx'] = 'http://www.google.com/kml/ext/2.2'
+    root << (document = XML::Node.new(:Document))
+    document << XML::Node.new(:name, 'OGN')
+    style_nodes { |n| document << xml.import(n) }
+    document << (folder = XML::Node.new(:Folder))
+    folder << XML::Node.new(:name, 'Tracks')
+    folder << (placemark = XML::Node.new(:Placemark))
+    placemark << XML::Node.new(:name, @callsign || 'all')
+    placemark << XML::Node.new(:styleUrl, '#track')
+    placemark << (track = XML::Node.new(:'gx:Track'))
+    track << XML::Node.new(:altitudeMode, 'absolute')
+    time = XML::Node.new(:'gx:SimpleArrayData')
+    time['name'] = 'Time'
+    ground_speed = XML::Node.new(:'gx:SimpleArrayData')
+    ground_speed['name'] = 'Ground Speed'
+    climb_rate = XML::Node.new(:'gx:SimpleArrayData')
+    climb_rate['name'] = 'Climb Rate'
+    turn_rate = XML::Node.new(:'gx:SimpleArrayData')
+    turn_rate['name'] = 'Turn Rate'
+    lines.each do |line|
+      if (sender = OGNClient::Message.parse(line)).is_a? OGNClient::SenderBeacon
+        if !@callsign || sender.callsign == @callsign
+          track << XML::Node.new(:when, sender.time.xmlschema)
+          track << XML::Node.new(:'gx:coord', "#{sender.longitude} #{sender.latitude} #{sender.altitude}")
+          track << XML::Node.new(:'gx:angles', "#{sender.heading} 0 0")
+          time << XML::Node.new(:'gx:value', sender.time.getlocal.strftime('%H:%M:%S'))
+          ground_speed << XML::Node.new(:'gx:value', sender.ground_speed.to_i.to_s)
+          climb_rate << XML::Node.new(:'gx:value', sender.climb_rate.to_i.to_s)
+          turn_rate << XML::Node.new(:'gx:value', sender.turn_rate.to_i.to_s)
+        end
+      end
+      progressbar.increment
+    end
+    track << (extended_data = XML::Node.new(:ExtendedData))
+    extended_data << (schema_data = XML::Node.new(:SchemaData))
+    schema_data['schemaUrl'] = '#schema'
+    schema_data << time
+    schema_data << ground_speed
+    schema_data << climb_rate
+    schema_data << turn_rate
+    xml.save(@outfile, encoding: XML::Encoding::UTF_8)
+  end
+end
+
+begin
+  Converter.new.convert!
+rescue => exception
+  puts "#{File.basename($0)}: #{exception.message}"
+  exit 1
+end
