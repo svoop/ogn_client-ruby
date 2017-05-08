@@ -3,7 +3,7 @@ module OGNClient
   class SenderBeacon < Message
 
     SENDER_BEACON_PATTERN = %r(
-      id(?<details>\w{2})(?<id>\w+?)\s?
+      id(?<details>\w{2})(?<id>\w{6})\s?
       (?:(?<climb_rate>[+-]\d+?)fpm\s)?
       (?:(?<turn_rate>[+-][\d.]+?)rot\s)?
       (?:FL(?<flight_level>[\d.]+)\s)?
