@@ -93,12 +93,13 @@ class Converter
     climb_rate['name'] = 'Climb Rate'
     turn_rate = XML::Node.new(:'gx:SimpleArrayData')
     turn_rate['name'] = 'Turn Rate'
+    array_data = { when: [], coord: [], angles: [] }
     lines.each do |line|
       if (sender = OGNClient::Message.parse(line)).is_a? OGNClient::SenderBeacon
         if !@callsign || sender.callsign == @callsign
-          track << XML::Node.new(:when, sender.time.xmlschema)
-          track << XML::Node.new(:'gx:coord', "#{sender.longitude} #{sender.latitude} #{sender.altitude}")
-          track << XML::Node.new(:'gx:angles', "#{sender.heading} 0 0")
+          array_data[:when] << XML::Node.new(:when, sender.time.xmlschema)
+          array_data[:coord] << XML::Node.new(:'gx:coord', "#{sender.longitude} #{sender.latitude} #{sender.altitude}")
+          array_data[:angles] << XML::Node.new(:'gx:angles', "#{sender.heading} 0 0")
           time << XML::Node.new(:'gx:value', sender.time.getlocal.strftime('%H:%M:%S'))
           ground_speed << XML::Node.new(:'gx:value', sender.ground_speed.to_i.to_s)
           climb_rate << XML::Node.new(:'gx:value', sender.climb_rate.to_i.to_s)
@@ -106,6 +107,9 @@ class Converter
         end
       end
       progressbar.increment
+    end
+    array_data.keys.each do |key|
+      array_data[key].each { |d| track << d }
     end
     track << (extended_data = XML::Node.new(:ExtendedData))
     extended_data << (schema_data = XML::Node.new(:SchemaData))
