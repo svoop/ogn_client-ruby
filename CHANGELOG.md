@@ -1,3 +1,8 @@
+## 0.2.3
+
+  * add support for explicit message date
+  * fix ogn2kml for larger tracks
+
 ## 0.2.2
 
   * add example executables
