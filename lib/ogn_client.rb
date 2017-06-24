@@ -1,4 +1,5 @@
 require 'socket'
+require 'time'
 
 require_relative 'ogn_client/version'
 require_relative 'ogn_client/errors'

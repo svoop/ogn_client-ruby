@@ -42,12 +42,12 @@ module OGNClient
     attr_reader :heading        # degrees from 1 to 360
     attr_reader :ground_speed   # kilometers per hour
 
-    def self.parse(raw)
+    def self.parse(raw, date: nil)
       fail(OGNClient::MessageError, "raw message must be String but is #{raw.class}") unless raw.is_a? String
       raw = raw.chomp.force_encoding('ASCII-8BIT').encode('UTF-8')
-      OGNClient::SenderBeacon.new.send(:parse, raw) ||
-        OGNClient::ReceiverStatus.new.send(:parse, raw) ||
-        OGNClient::ReceiverBeacon.new.send(:parse, raw) ||
+      OGNClient::SenderBeacon.new.send(:parse, raw, date: date) ||
+        OGNClient::ReceiverStatus.new.send(:parse, raw, date: date) ||
+        OGNClient::ReceiverBeacon.new.send(:parse, raw, date: date) ||
         OGNClient::Comment.new.send(:parse, raw) ||
         fail(OGNClient::MessageError, "message payload parsing failed: `#{raw}'")
     end
@@ -58,8 +58,9 @@ module OGNClient
 
     private
 
-    def parse(raw)
+    def parse(raw, date: nil)
       @raw = raw
+      @date = Date.parse(date) if date
       raw.match POSITION_PATTERN do |match|
         %i(callsign receiver time altitude).each do |attr|
           send("#{attr}=", match[attr]) if match[attr]
@@ -82,9 +83,13 @@ module OGNClient
     end
 
     def time=(raw)
-      now = Time.now.utc
-      time = Time.new(now.year, now.month, now.day, raw[0,2], raw[2,2], raw[4,2], 0)
-      time -= 86400 if time > now   # adjust date of beacons sent just before midnight
+      if @date
+        time = Time.new(@date.year, @date.month, @date.day, raw[0,2], raw[2,2], raw[4,2], 0)
+      else
+        now = Time.now.utc
+        time = Time.new(now.year, now.month, now.day, raw[0,2], raw[2,2], raw[4,2], 0)
+        time -= 86400 if time > now   # adjust date of beacons sent just before midnight
+      end
       @time = time
     end
 

@@ -17,6 +17,12 @@ describe OGNClient::Message do
     subject.ground_speed.must_equal 100
   end
 
+  it "must parse valid raw message with explicit date" do
+    raw = "FLRDF0A52>APRS,qAS,LSTB:/220132h4658.70N/00707.72Ez090/054/A=001424 !W37! id06DF0A52 +020fpm +0.0rot 55.2dB 0e -6.2kHz gps4x6 hearD7EA hearDA95"
+    subject = OGNClient::Message.parse(raw, date: '2011-11-11')
+    subject.time.must_equal Time.new(2011, 11, 11, 22, 01, 32, 0)
+  end
+
   it "must parse 5000 recorded valid real-world raw messages" do
     fixtures_file = 'spec/fixtures/messages.txt'
     unless File.exist? fixtures_file

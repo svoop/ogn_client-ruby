@@ -62,7 +62,7 @@ module OGNClient
 
     private
 
-    def parse(raw)
+    def parse(raw, date: nil)
       raw.match SENDER_BEACON_PATTERN do |match|
         super unless @raw
         %i(details id flight_level climb_rate turn_rate signal_power signal_quality errors frequency_offset gps_accuracy flarm_software_version flarm_hardware_version flarm_id proximity).each do |attr|

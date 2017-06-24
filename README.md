@@ -61,6 +61,13 @@ The factory method `OGNClient::Message.parse` will return one an instance of `OG
 
 In production, you may want to rescue from these errors and ignore the message. You should, however, log the offending messages messages, [file a bug](#community-support) and replay them once the bug has been fixed.
 
+:point_up: Raw APRS messages do not contain the date, but assume the current day. This may cause trouble around midnight, however, the parser deals with such edge cases gracefully. Things are a little different when parsing raw APRS messages recorded in the past e.g. with `ognlogd`. Since the parser has no means to detect the date the APRS messages have been sent, you have to pass it as an option:
+
+```ruby
+raw_aprs = File.open('2017-06-24.log', &:gets)
+OGNClient::Message.parse(raw_aprs, date: '2017-06-24')
+```
+
 #### OGNClient::SenderBeacon
 
 Sender beacons are usually coming from aircraft equipped with [FLARM](https://flarm.com) (anti-collision warning system) or similar devices which broadcast position data as RF beacons.

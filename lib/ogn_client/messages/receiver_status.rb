@@ -63,7 +63,7 @@ module OGNClient
 
     private
 
-    def parse(raw)
+    def parse(raw, date: nil)
       raw.match RECEIVER_STATUS_PATTERN do |match|
         super unless @raw
         %i(version platform cpu_load cpu_temperature ram_free ram_total ntp_offset ntp_correction voltage amperage rf_correction_manual rf_correction_automatic senders visible_senders signal_quality senders_signal_quality senders_messages good_senders_signal_quality good_and_bad_senders good_senders).each do |attr|

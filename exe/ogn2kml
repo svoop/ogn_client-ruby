@@ -20,6 +20,7 @@ class Converter
       END
       o.on('-a', '--about', 'author and license information') { puts 'Written by Sven Schwyn (bitcetera.com) and distributed under MIT license.'; exit }
       o.on('-c', '--callsign STRING', String, 'aircraft callsign (e.g. FLRAABBCC)') { |v| @callsign = v }
+      o.on('-d', '--date YYYY-MM-DD', String, 'date the APRS messages were recorded (default: today)') { |v| @date = v }
       o.on('-o', '--outfile FILE', String, 'generated KML file (default: INFILE.kml)') { |v| @outfile = v.sub(/\.kml$/, '') + '.kml' }
     end.parse!
     @infile = ARGV.pop
@@ -95,7 +96,7 @@ class Converter
     turn_rate['name'] = 'Turn Rate'
     array_data = { when: [], coord: [], angles: [] }
     lines.each do |line|
-      if (sender = OGNClient::Message.parse(line)).is_a? OGNClient::SenderBeacon
+      if (sender = OGNClient::Message.parse(line, date: @date)).is_a? OGNClient::SenderBeacon
         if !@callsign || sender.callsign == @callsign
           array_data[:when] << XML::Node.new(:when, sender.time.xmlschema)
           array_data[:coord] << XML::Node.new(:'gx:coord', "#{sender.longitude} #{sender.latitude} #{sender.altitude}")

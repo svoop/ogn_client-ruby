@@ -9,7 +9,7 @@ module OGNClient
 
     private
 
-    def parse(raw)
+    def parse(raw, date: nil)
       raw.match RECEIVER_BEACON_PATTERN do
         super unless @raw
         self
