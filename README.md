@@ -8,8 +8,8 @@
 
 [OGN](http://glidernet.org) broadcasts aircraft positions as [APRS](http://www.aprs.org)/[APRS-IS](http://www.aprs-is.net) messages. This gem hooks into this stream of data and provides the necessary classes to parse the raw message strings into meaningful objects.
 
-* Author: [Sven Schwyn](http://bitcetera.com)
 * Homepage: https://github.com/svoop/ogn_client-ruby
+* Author: [Sven Schwyn](http://bitcetera.com)
 
 :loudspeaker: A word from the shameless commerce division: Looking for a freelance Ruby developer? Surf to http://bitcetera.com and contact Sven. Or [show your support with a donation](https://donorbox.org/bitcetera-ogn_client-ruby). Yes, we do sponsored features, too.
 
@@ -211,25 +211,20 @@ Convert raw APRS messages (e.g. from `ognlogd`) to KML.
 
 ## Development
 
-Check out the repository, install the dependencies and run the test suite:
+To install the development dependencies and then run the test suite:
 
-    $ git clone git@github.com:svoop/ogn_client-ruby.git
-    $ cd ogn_client-ruby
-    $ gem install bundler
-    $ bin/setup
-    $ rake
+  bundle install
+  bundle exec rake    # run tests once
+  bundle exec guard   # run tests whenever files are modified
 
-If you are on macOS, *guard*, *guard-minitest* and *minitest-osx* are also installed and therefore you get the test results as notifications by running a guard watchdog with:
+Please submit issues on:
 
-    $ guard
+https://github.com/svoop/ogn_client-ruby/issues
 
-To play around with the gem:
+To contribute code, fork the project on Github, add your code and submit a
+pull request:
 
-    $ bin/console
-
-And to install this gem onto your local machine:
-
-    $ bundle exec rake install
+https://help.github.com/articles/fork-a-repo
 
 ## Feature Brainstorming
 
