@@ -195,11 +195,12 @@ A simple daemon to log raw APRS messages to daily files.
 
     ognlogd --help
 
-### ogn2kml
+### ogn2kml and ogn2geojson
 
-Convert raw APRS messages (e.g. from `ognlogd`) to KML.
+Convert raw APRS messages (e.g. from `ognlogd`) to KML or GeoJSON.
 
     ogn2kml --help
+    ogn2geojson --help
 
 ## Community Support
 

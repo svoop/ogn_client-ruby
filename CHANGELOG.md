@@ -1,3 +1,7 @@
+## 0.2.4
+
+  * add ogn2geojson
+
 ## 0.2.3
 
   * add support for explicit message date

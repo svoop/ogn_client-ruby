@@ -1,0 +1,92 @@
+#!/usr/bin/env ruby
+
+require 'bundler/inline'
+require 'optparse'
+require 'json'
+
+gemfile do
+  source 'https://rubygems.org'
+  ruby '>= 2.4'
+  gem 'progressbar', '~> 1.8'
+  gem 'ogn_client-ruby', '~> 0.2', require: 'ogn_client'
+end
+
+class Converter
+  RED = 140.freeze
+  GREEN = 112.freeze
+
+  def initialize
+    OptionParser.new do |o|
+      o.banner = <<~END
+        Convert raw OGN APRS to GeoJSON.
+        Usage: ogn2geojson [options] infile
+      END
+      o.on('-a', '--about', 'author and license information') { puts 'Written by Sven Schwyn (bitcetera.com) and distributed under MIT license.'; exit }
+      o.on('-c', '--callsign STRING', String, 'aircraft callsign (e.g. FLRAABBCC)') { |v| @callsign = v }
+      o.on('-d', '--date YYYY-MM-DD', String, 'date the APRS messages were recorded (default: today)') { |v| @date = v }
+      o.on('-o', '--outfile FILE', String, 'generated GeoJSON file (default: INFILE.geojson)') { |v| @outfile = v.sub(/\.geojson$/, '') + '.geojson' }
+    end.parse!
+    @infile = ARGV.pop
+    fail 'infile not found' unless @infile && File.exists?(@infile)
+    @outfile ||= @infile.sub(/\.\w+$/, '') + '.geojson'
+  end
+
+  def feature(from_point, to_point, properties={})
+    {
+      type: 'Feature',
+      geometry: {
+        type: 'LineString',
+        coordinates: [from_point, to_point]
+      },
+      properties: {
+        'stroke-width': 2,
+        'stroke-opacity': 1
+      }.merge(properties)
+    }
+  end
+
+  def stroke_for(climb_rate)
+    case
+    when climb_rate == 0
+      "rgb(0, 0, 0)"
+    when climb_rate < 0
+      color = RED + ([climb_rate.abs, 5].min * ((250 - RED) / 5)).round
+      "rgb(#{color}, 0, 0)"
+    when climb_rate > 0
+      color = GREEN + ([climb_rate, 5].min * ((250 - GREEN) / 5)).round
+      "rgb(0, #{color}, 0)"
+    end
+  end
+
+  def convert!
+    lines = File.readlines(@infile)
+    progressbar = ProgressBar.create(format: '%e |%b>%i| %p%% %t', total: lines.count)
+    features = lines.each.with_object([]) do |line, features|
+      if (sender = OGNClient::Message.parse(line, date: @date)).is_a? OGNClient::SenderBeacon
+        if !@callsign || sender.callsign == @callsign
+          to_point = [sender.longitude, sender.latitude, sender.altitude]
+          if @from_point
+            features << feature(@from_point, to_point,
+              time: sender.time.getlocal.strftime('%H:%M:%S'),
+              heading: sender.heading,
+              'ground-speed': sender.ground_speed,
+              'climb-rate': sender.climb_rate,
+              'turn-rate': sender.turn_rate,
+              stroke: stroke_for(sender.climb_rate)
+            )
+          end
+          @from_point = to_point
+        end
+      end
+      progressbar.increment
+    end
+    File.write(@outfile, JSON.pretty_generate(type: "FeatureCollection", features: features))
+  end
+end
+
+begin
+  Converter.new.convert!
+rescue => exception
+  puts "#{File.basename($0)}: #{exception.message}"
+  exit 1
+end
