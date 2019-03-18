@@ -7,7 +7,6 @@ require 'json'
 gemfile do
   source 'https://rubygems.org'
   ruby '>= 2.4'
-  gem 'progressbar', '~> 1.8'
   gem 'ogn_client-ruby', '~> 0.2', require: 'ogn_client'
 end
 
@@ -60,7 +59,6 @@ class Converter
 
   def convert!
     lines = File.readlines(@infile)
-    progressbar = ProgressBar.create(format: '%e |%b>%i| %p%% %t', total: lines.count)
     features = lines.each.with_object([]) do |line, features|
       if (sender = OGNClient::Message.parse(line, date: @date)).is_a? OGNClient::SenderBeacon
         if !@callsign || sender.callsign == @callsign
@@ -78,7 +76,6 @@ class Converter
           @from_point = to_point
         end
       end
-      progressbar.increment
     end
     File.write(@outfile, JSON.pretty_generate(type: "FeatureCollection", features: features))
   end
