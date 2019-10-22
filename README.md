@@ -1,5 +1,5 @@
 [![Version](https://img.shields.io/gem/v/ogn_client-ruby.svg?style=flat)](https://rubygems.org/gems/ogn_client-ruby)
-[![Continuous Integration](https://img.shields.io/travis/svoop/ogn_client-ruby/master.svg?style=flat)](https://travis-ci.org/svoop/ogn_client-ruby)
+[![Tests](https://github.com/svoop/ogn_client-ruby/workflows/Test/badge.svg)](https://github.com/svoop/ogn_client-ruby/actions?workflow=Test)
 [![Code Climate](https://img.shields.io/codeclimate/maintainability/svoop/ogn_client-ruby.svg?style=flat)](https://codeclimate.com/github/svoop/ogn_client-ruby)
 [![Donorbox](https://img.shields.io/badge/donate-on_donorbox-yellow.svg)](https://donorbox.org/bitcetera)
 
