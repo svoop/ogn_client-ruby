@@ -1,24 +1,43 @@
 # coding: utf-8
-lib = File.expand_path('../lib', __FILE__)
-$LOAD_PATH.unshift(lib) unless $LOAD_PATH.include?(lib)
-require 'ogn_client/version'
+require_relative 'lib/ogn_client/version'
 
 Gem::Specification.new do |spec|
   spec.name          = 'ogn_client-ruby'
   spec.version       = OGNClient::VERSION
+  spec.summary       = 'Subscriber and parser for APRS messages from OGN'
+  spec.description   = <<~END
+    OGN (glidernet.org) broadcasts aircraft positions as APRS/APRS-IS messages.
+    This gem hooks into this stream of data and provides the necessary classes
+    to parse the raw message strings into meaningful objects.
+  END
   spec.authors       = ['Sven Schwyn']
   spec.email         = ['ruby@bitcetera.com']
-  spec.summary       = %q{Subscriber and parser for APRS messages from OGN}
-  spec.description   = %q{OGN (glidernet.org) broadcasts aircraft positions as APRS/APRS-IS messages. This gem hooks into this stream of data and provides the necessary classes to parse the raw message strings into meaningful objects.}
   spec.homepage      = 'https://github.com/svoop/ogn_client-ruby'
   spec.license       = 'MIT'
 
-  spec.files         = `git ls-files -z`.split("\x0").reject { |f| f.match(%r{^(test|spec|features)/}) }
-  spec.bindir        = 'exe'
-  spec.executables   = spec.files.grep(%r{^exe/}) { |f| File.basename(f) }
-  spec.require_paths = ['lib']
+  spec.metadata = {
+    'homepage_uri'      => spec.homepage,
+    'changelog_uri'     => 'https://github.com/svoop/ogn_client-ruby/blob/master/CHANGELOG.md',
+    'source_code_uri'   => 'https://github.com/svoop/ogn_client-ruby',
+    'documentation_uri' => 'https://www.rubydoc.info/gems/ogn_client-ruby',
+    'bug_tracker_uri'   => 'https://github.com/svoop/ogn_client-ruby/issues'
+  }
 
-  spec.required_ruby_version = '>= 2.4'
+  spec.files         = Dir['lib/**/*']
+  spec.require_paths = %w(lib)
+  spec.bindir        = 'exe'
+  spec.executables   = %w(ogn2geojson ogn2kml ognlogd)
+
+  spec.extra_rdoc_files = Dir['README.md', 'CHANGELOG.md', 'LICENSE.txt']
+  spec.rdoc_options    += [
+    '--title', 'OGN Subscriber and Parser',
+    '--main', 'README.md',
+    '--line-numbers',
+    '--inline-source',
+    '--quiet'
+  ]
+
+  spec.required_ruby_version = '>= 2.4.0'
 
   spec.add_development_dependency 'rake'
   spec.add_development_dependency 'pry'
