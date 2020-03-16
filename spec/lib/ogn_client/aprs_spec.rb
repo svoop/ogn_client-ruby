@@ -4,8 +4,8 @@ describe OGNClient::APRS do
 
   describe "#new" do
     it "must choose the correct port" do
-      OGNClient::APRS.new(callsign: "ROCT").instance_variable_get(:@port).must_equal OGNClient::APRS::PORT_UNFILTERED
-      OGNClient::APRS.new(callsign: "ROCT", filter: "p/oggy/ist/super").instance_variable_get(:@port).must_equal OGNClient::APRS::PORT_FILTERED
+      _(OGNClient::APRS.new(callsign: "ROCT").instance_variable_get(:@port)).must_equal OGNClient::APRS::PORT_UNFILTERED
+      _(OGNClient::APRS.new(callsign: "ROCT", filter: "p/oggy/ist/super").instance_variable_get(:@port)).must_equal OGNClient::APRS::PORT_FILTERED
     end
   end
 
@@ -26,11 +26,11 @@ describe OGNClient::APRS do
     subject { OGNClient::APRS.new callsign: "ROCT" }
 
     it "must return -1 for readonly logins" do
-      subject.send(:passcode, readonly: true).must_equal (-1)
+      _(subject.send(:passcode, readonly: true)).must_equal (-1)
     end
 
     it "must calculate the passcode for readwrite logins" do
-      subject.send(:passcode, readonly: false).must_equal 25337
+      _(subject.send(:passcode, readonly: false)).must_equal 25337
     end
   end
 
@@ -38,11 +38,11 @@ describe OGNClient::APRS do
     subject { OGNClient::APRS.new callsign: "ROCT" }
 
     it "must return a valid APRS handshake string for readonly logins" do
-      subject.send(:handshake, readonly: true).must_equal "user ROCT pass -1 vers #{OGNClient::APRS::AGENT} #{OGNClient::VERSION}"
+      _(subject.send(:handshake, readonly: true)).must_equal "user ROCT pass -1 vers #{OGNClient::APRS::AGENT} #{OGNClient::VERSION}"
     end
 
     it "must return a valid APRS handshake string for readwrite logins" do
-      subject.send(:handshake, readonly: false).must_equal "user ROCT pass 25337 vers #{OGNClient::APRS::AGENT} #{OGNClient::VERSION}"
+      _(subject.send(:handshake, readonly: false)).must_equal "user ROCT pass 25337 vers #{OGNClient::APRS::AGENT} #{OGNClient::VERSION}"
     end
   end
 
@@ -50,7 +50,7 @@ describe OGNClient::APRS do
     subject { OGNClient::APRS.new callsign: "ROCT", filter: "p/oggy/ist/super" }
 
     it "must return a valid APRS handshake string with filters" do
-      subject.send(:handshake, readonly: true).must_equal "user ROCT pass -1 vers #{OGNClient::APRS::AGENT} #{OGNClient::VERSION} filter p/oggy/ist/super"
+      _(subject.send(:handshake, readonly: true)).must_equal "user ROCT pass -1 vers #{OGNClient::APRS::AGENT} #{OGNClient::VERSION} filter p/oggy/ist/super"
     end
   end
 
