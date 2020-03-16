@@ -1,3 +1,7 @@
+## 0.2.5 (unreleased)
+
+Nothing so far
+
 ## 0.2.4
 
   * add ogn2geojson
