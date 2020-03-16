@@ -1,6 +1,7 @@
-## 0.2.4
+## 0.2.4 (unreleased)
 
   * add ogn2geojson
+  * sign gem and add checksums
 
 ## 0.2.3
 

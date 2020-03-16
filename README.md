@@ -14,19 +14,35 @@
 
 ## Installation
 
-Add this line to your application's Gemfile:
+### Security
+
+This gem is [cryptographically signed](https://guides.rubygems.org/security/#using-gems) in order to assure it hasn't been tampered with. Unless already done, please add the author's public key as a trusted certificate now:
+
+```
+gem cert --add <(curl -Ls https://raw.github.com/svoop/ogn_client-ruby/master/certs/svoop.pem)
+```
+
+### Bundler
+
+Add the following to the <tt>Gemfile</tt> or <tt>gems.rb</tt> of your [Bundler](https://bundler.io) powered Ruby project:
 
 ```ruby
 gem 'ogn_client-ruby', require: 'ogn_client'
 ```
 
-And then execute:
+And then install the bundle:
 
-    $ bundle
+```
+bundle install --trust-policy MediumSecurity
+```
 
-Or install it yourself with:
+### Standalone
 
-    $ gem install ogn_client-ruby
+If you're only going to use [the executables](#executables):
+
+```
+gem install ogn_client-ruby --trust-policy MediumSecurity
+```
 
 ## Usage
 
