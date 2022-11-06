@@ -232,6 +232,12 @@ To install the development dependencies and then run the test suite:
   bundle install
   bundle exec rake    # run tests once
   bundle exec guard   # run tests whenever files are modified
+  
+The test suite may run against live OGN data if you set the `SPEC_SCOPE` environment variable, by default, these tests are skipped.
+
+```
+export SPEC_SCOPE=all
+```
 
 Please submit issues on:
 
