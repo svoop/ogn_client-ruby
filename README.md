@@ -1,7 +1,7 @@
 [![Version](https://img.shields.io/gem/v/ogn_client-ruby.svg?style=flat)](https://rubygems.org/gems/ogn_client-ruby)
 [![Tests](https://img.shields.io/github/actions/workflow/status/svoop/ogn_client-ruby/test.yml?style=flat&label=tests)](https://github.com/svoop/ogn_client-ruby/actions?workflow=Test)
 [![Code Climate](https://img.shields.io/codeclimate/maintainability/svoop/ogn_client-ruby.svg?style=flat)](https://codeclimate.com/github/svoop/ogn_client-ruby)
-[![Donorbox](https://img.shields.io/badge/donate-on_donorbox-yellow.svg)](https://donorbox.org/bitcetera)
+[![GitHub Sponsors](https://img.shields.io/github/sponsors/svoop.svg)](https://github.com/sponsors/svoop)
 
 # ogn_client-ruby
 
@@ -10,7 +10,7 @@
 * Homepage: https://github.com/svoop/ogn_client-ruby
 * Author: [Sven Schwyn](http://bitcetera.com)
 
-:loudspeaker: A word from the shameless commerce division: Looking for a freelance Ruby developer? Surf to http://bitcetera.com and contact Sven. Or [show your support with a donation](https://donorbox.org/bitcetera-ogn_client-ruby). Yes, we do sponsored features, too.
+Thank you for supporting free and open-source software by sponsoring on [GitHub](https://github.com/sponsors/svoop) or on [Donorbox](https://donorbox.com/bitcetera). Any gesture is appreciated, from a single Euro for a ☕️ cup of coffee to 🍹 early retirement.
 
 ## Installation
 
