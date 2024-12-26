@@ -1,6 +1,6 @@
 ## Main
 
-Nothing so far
+* update Ruby to 3.4
 
 ## 0.2.5
 
