@@ -1,6 +1,6 @@
 ## Main
 
-Nothing so far
+* Drop certs
 
 ## 0.2.6
 
@@ -9,7 +9,7 @@ Nothing so far
 ## 0.2.5
 
 * skip live tests by default
-* update certificate 
+* update certificate
 
 ## 0.2.4
 

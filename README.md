@@ -14,14 +14,6 @@ Thank you for supporting free and open-source software by sponsoring on [GitHub]
 
 ## Installation
 
-### Security
-
-This gem is [cryptographically signed](https://guides.rubygems.org/security/#using-gems) in order to assure it hasn't been tampered with. Unless already done, please add the author's public key as a trusted certificate now:
-
-```
-gem cert --add <(curl -Ls https://raw.github.com/svoop/ogn_client-ruby/master/certs/svoop.pem)
-```
-
 ### Bundler
 
 Add the following to the <tt>Gemfile</tt> or <tt>gems.rb</tt> of your [Bundler](https://bundler.io) powered Ruby project:
@@ -33,7 +25,7 @@ gem 'ogn_client-ruby', require: 'ogn_client'
 And then install the bundle:
 
 ```
-bundle install --trust-policy MediumSecurity
+bundle install
 ```
 
 ### Standalone
@@ -41,7 +33,7 @@ bundle install --trust-policy MediumSecurity
 If you're only going to use [the executables](#executables):
 
 ```
-gem install ogn_client-ruby --trust-policy MediumSecurity
+gem install ogn_client-ruby
 ```
 
 ## Usage
@@ -232,7 +224,7 @@ To install the development dependencies and then run the test suite:
   bundle install
   bundle exec rake    # run tests once
   bundle exec guard   # run tests whenever files are modified
-  
+
 The test suite may run against live OGN data if you set the `SPEC_SCOPE` environment variable, by default, these tests are skipped.
 
 ```
