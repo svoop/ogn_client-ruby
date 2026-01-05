@@ -94,12 +94,12 @@ module OGNClient
     end
 
     def longitude=(raw)
-      raw.first.match /(\d{3})([\d.]+)([EW])/
+      raw.first.match(/(\d{3})([\d.]+)([EW])/)
       @longitude = (($1.to_f + ("#{$2}#{raw.last}".to_f / 60)) * ($3 == 'E' ? 1 : -1)).round(6)
     end
 
     def latitude=(raw)
-      raw.first.match /(\d{2})([\d.]+)([NS])/
+      raw.first.match(/(\d{2})([\d.]+)([NS])/)
       @latitude = (($1.to_f + ("#{$2}#{raw.last}".to_f / 60)) * ($3 == 'N' ? 1 : -1)).round(6)
     end
 
