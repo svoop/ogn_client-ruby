@@ -6,7 +6,8 @@ require 'minitest/autorun'
 require Pathname(__dir__).join('..', 'lib', 'ogn_client')
 
 require 'minitest/flash'
-require 'minitest/focus'
+
+Minitest.load_plugins
 
 class Minitest::Spec
   class << self
