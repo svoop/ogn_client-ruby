@@ -16,11 +16,12 @@ Gem::Specification.new do |spec|
   spec.license       = 'MIT'
 
   spec.metadata = {
-    'homepage_uri'      => spec.homepage,
-    'changelog_uri'     => 'https://github.com/svoop/ogn_client-ruby/blob/master/CHANGELOG.md',
-    'source_code_uri'   => 'https://github.com/svoop/ogn_client-ruby',
-    'documentation_uri' => 'https://www.rubydoc.info/gems/ogn_client-ruby',
-    'bug_tracker_uri'   => 'https://github.com/svoop/ogn_client-ruby/issues'
+    'homepage_uri'          => spec.homepage,
+    'changelog_uri'         => 'https://github.com/svoop/ogn_client-ruby/blob/master/CHANGELOG.md',
+    'source_code_uri'       => 'https://github.com/svoop/ogn_client-ruby',
+    'documentation_uri'     => 'https://www.rubydoc.info/gems/ogn_client-ruby',
+    'bug_tracker_uri'       => 'https://github.com/svoop/ogn_client-ruby/issues',
+    'rubygems_mfa_required' => 'true'
   }
 
   spec.files         = Dir['lib/**/*']
